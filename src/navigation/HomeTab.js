@@ -51,7 +51,7 @@ return(
       />
       
       <Tab.Screen
-        name={constants.Screens.WishProductList.name}
+        name={"WishProductList1"}
         component={WishProductList}
         options={{
           tabBarIcon: ({ color, size }) => (

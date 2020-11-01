@@ -100,6 +100,7 @@ export const getProdcutList = (userData)=>async(dispatch,getState)=>{
     
     var data = new FormData();
     data.append("prod_id", userData.prod_id);
+    data.append("userId", getState().auth.user.id);
 
     let token = getState().auth.user.accessToken;
     let post_req = {
@@ -116,6 +117,7 @@ export const getProdcutList = (userData)=>async(dispatch,getState)=>{
     .then(res =>{
         res.json()
         .then(response => {
+            console.log(response);
             if(response.status == "1"){
                 dispatch({ type : 'FTECH_PRODUCT_LIST', payload : response.product});
                 // navigateWithOutParams(constants.Screens.OTPScreen.name);
@@ -269,7 +271,7 @@ export const searchProductsList = (userData)=>async(dispatch,getState)=>{
 
 {/****************   start cart   ***************/}
 export const addToCart=(pordData)=>async(dispatch,getState)=>{
-    //dispatch({type : 'LOADING'});
+    dispatch({type : 'LOADING'});
     let url = ddenterpriseApi + 'api-add_to_cart';
     let token = getState().auth.user.accessToken;
     var data = new FormData();
@@ -297,6 +299,45 @@ export const addToCart=(pordData)=>async(dispatch,getState)=>{
         .then(response => {
             if(response.status == 1){
                 dispatch({type:'ADD_TO_CART',addItem:response.addItem,cartItem_id:response.cart_item_id ,prodVariId:response.prodId , prodSelectedQty:response.selectedQty , variation:response.selectedVariationID});
+            }else{
+                console.log("error",response);
+                //showAlertDialog("POST is not created.Please try again");
+            }
+        })
+        .catch( err => {
+                console.log("product_exception",err);
+                dispatch({ type : 'ERROR_SUBMIT', payload : "Not get product"});
+        })
+    })
+    .catch( err => {
+            console.log("error" ,err);
+            dispatch({ type : 'ERROR_SUBMIT', payload : 'Something went wrong.'})
+    })
+}
+
+export const getCartItems=(pordData)=>async(dispatch,getState)=>{
+    //dispatch({type : 'LOADING'});
+    let url = ddenterpriseApi + 'api-fetchCart';
+    let token = getState().auth.user.accessToken;
+    
+    var data = new FormData();
+    data.append("userId", getState().auth.user.id);
+    let post_req = {
+        method: 'POST',
+        body: data,
+        headers: {
+        'Content-Type': 'multipart/form-data',
+         'token': token,
+        }
+    }
+
+    console.log(url, post_req);
+    fetch(url, post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            if(response.status == 1){
+                dispatch({ type : 'FETCH_CART_ITEM', payload:response.cart});
             }else{
                 console.log("error",response);
                 //showAlertDialog("POST is not created.Please try again");

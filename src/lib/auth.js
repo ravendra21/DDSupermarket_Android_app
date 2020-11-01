@@ -7,6 +7,31 @@ import {showAlertDialog} from '../constants/Utils'
 
 export const switchRootScreen = (data) => async(dispatch,getState) => {  
 	setTimeout(() => {
+        getUserFromStorage().then(value => {
+            // console.log("user  data =>",value);
+            if(value != null){
+                let loginedUser = JSON.parse(value);
+                // console.log("user  data =>",loginedUser);
+                // console.log("user_id",loginedUser.id);
+                dispatch({type : 'AUTH_USER_ROOT',
+                    user: {
+                            accessToken: loginedUser.accessToken,
+                            device_token: loginedUser.device_token,
+                            device_type: loginedUser.device_type,
+                            email: loginedUser.email,
+                            first_name: loginedUser.first_name,
+                            id: loginedUser.id,
+                            image: loginedUser.image,
+                            last_name: loginedUser.last_name,
+                            mobile: loginedUser.mobile,
+                     },
+                  //    switchApp: {
+                  //       isLoading: false,
+                  //       isAppIntro:false,
+                    // }
+                });
+        }
+        
         getUserAccessTokenFromStorage().then(value=>{
             if(value != null){
                 dispatch({type : 'AUTH_SWITCH_ROOT',
@@ -27,31 +52,6 @@ export const switchRootScreen = (data) => async(dispatch,getState) => {
                 });
             }
         });
-
-		getUserFromStorage().then(value => {
-            // console.log("user  data =>",value);
-			if(value != null){
-                let loginedUser = JSON.parse(value);
-                // console.log("user  data =>",loginedUser);
-                // console.log("user_id",loginedUser.id);
-				dispatch({type : 'AUTH_USER_ROOT',
-			    	user: {
-			                accessToken: loginedUser.accessToken,
-                            device_token: loginedUser.device_token,
-                            device_type: loginedUser.device_type,
-                            email: loginedUser.email,
-                            first_name: loginedUser.first_name,
-                            id: loginedUser.id,
-                            image: loginedUser.image,
-                            last_name: loginedUser.last_name,
-                            mobile: loginedUser.mobile,
-			         },
-			      //    switchApp: {
-			      //       isLoading: false,
-			      //       isAppIntro:false,
-			     	// }
-	    		});
-            }
 
 			// }else{
 			// 	dispatch({type : 'AUTH_SWITCH_ROOT',

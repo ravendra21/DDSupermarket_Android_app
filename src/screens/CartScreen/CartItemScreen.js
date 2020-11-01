@@ -21,12 +21,12 @@ import {connect} from 'react-redux'
 import { PrimaryTextInput,TextScreenHeader} from '../../components/textInputs';
 import ProductBlock from '../../components/ProductBlock';
 import constants from "../../constants";
-import {prod_cat_image,prod_image,prod_variation_url,banner_url} from "../../constants/url";
+import {prod_image,prod_variation_url} from "../../constants/url";
 import { PrimaryButton,DefaultMenuOption} from "../../components/button";
 import ErrorBox from '../../components/ErrorBox';
 import { validate,showAlertDialog,generateOtp } from "../../constants/Utils";
 import {navigateWithOutParams} from '../../navigation/NavigationServices'
-import { removeWishProduct,getWishList} from "../../lib/data";
+import { removeWishProduct,getWishList,getCartItems} from "../../lib/data";
 import {SingleRowSkeltons,FullRow,ProductBlockSkelton} from '../../components/skeltons/RowSkeltons';
 import SingleRowImagSkeltons from '../../components/skeltons/SingleRowImagSkeltons';
 import SearchBox from '../../components/SearchBox'
@@ -49,20 +49,35 @@ function CartItemScreen(props){
         prodCatApi:false,
     });
 
-    // React.useEffect(() => {
-    //     if(data.waeatherApi == false){
-    //         //getLatLang();
-    //     }
+    React.useEffect(() => {
+        if(data.waeatherApi == false){
+            //getLatLang();
+        }
 
-    //     if( data.prodCatApi == false){
-    //         props.dispatch(getWishList());
-    //         setData({
-    //             ...data,
-    //             prodCatApi: true,
-    //         });
-    //     }
+        if( data.prodCatApi == false){
+            props.dispatch({type : 'LOADING'});
+            props.dispatch(getCartItems());
+            setData({
+                ...data,
+                prodCatApi: true,
+            });
+        }
 
-    //   });
+      });
+
+    const checkOutButton=()=>{
+        let subTotal = props.data.subtotal;
+        let total = subTotal;
+        return(
+            <View style={styles.checkoutBtn}>
+                <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-evenly'}}>
+                    <Text style={[styles.checkout]}>CHECKOUT </Text>
+                    <Text style={styles.checkout}> Rs. {total} </Text> 
+                </TouchableOpacity>
+            </View>
+                    
+        )
+    }
 
     const viewSingleProd =(prodId, actionType,slug)=>{
         props.navigation.navigate(constants.Screens.SingleProduct.name,{"prodId":prodId,"type":actionType,"attribute_slug":slug });
@@ -102,7 +117,6 @@ function CartItemScreen(props){
                       showsVerticalScrollIndicator={false}
                       data={prod_cat_item}
                       renderItem={({ item }) => (
-
                             <View style={{...styles.prodBlock,flexDirection:'row'}}>
                                 <View style={{width:constants.width*0.4}}>
                                 <Image style={styles.labelImg} source={{ uri:prod_variation_url + item.fimage}}/>
@@ -118,12 +132,20 @@ function CartItemScreen(props){
                                     <View style={{flexDirection:'row'}}>
                                             {showSelectedVariation(item)}
                                     </View>
+                                    <View>
+                                        <TouchableOpacity style={{borderWidth:1,borderRadius:5,borderColor:constants.Colors.color_lineGrey,padding:3,width:70,elevation:3,backgroundColor:constants.Colors.color_WHITE}}>
+                                            <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:16}}> Remove </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
                       )}
                       //Setting the number of column
                       numColumns={1}
                       keyExtractor={(item) => item.id}
+                      ListFooterComponent={
+                        <View style={{height:40}}/>
+                      }
                     />
                 </View>
             )
@@ -154,8 +176,9 @@ function CartItemScreen(props){
       </KeyboardAwareScrollView>
         <ProgressView
             isProgress={props.indicator} 
-            title={"Removing..."}
+            title={"Fetching..."}
         />
+        {checkOutButton()}
       </SafeAreaView>
     )
 }
@@ -164,8 +187,8 @@ const styles = StyleSheet.create({
     container: {
       flex: 1, 
       backgroundColor: constants.Colors.color_WHITE,
-      
     },
+    
     labelConatainer: {
         flex:1,
         paddingTop: 31,
@@ -200,7 +223,23 @@ const styles = StyleSheet.create({
         fontFamily:constants.fonts.Cardo_Bold,
         fontSize:18,
         color:constants.Colors.color_WHITE
-    }
+    },
+    checkout:{
+        fontFamily:constants.fonts.Cardo_Bold, 
+        textAlign:'center',
+        color: constants.Colors.color_WHITE,
+        fontSize:constants.vw(18),
+        padding:5
+    },
+    checkoutBtn:{
+        width:'100%',
+        backgroundColor:constants.Colors.color_statusbar,
+        position:'absolute',
+        bottom:0,
+        zIndex:2,
+        elevation:60,
+        padding:7
+    },
   });
 
 function mapDispatchToProps(dispatch) {

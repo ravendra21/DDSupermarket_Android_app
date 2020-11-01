@@ -117,6 +117,13 @@ function DrawerSlider(props){
                         </View>
                     </TouchableOpacity>
 
+                    <TouchableOpacity style={[styles.menuTab,data.selectedMenu =="FAQ"?styles.selectedMenu :{}]} onPress={()=>{props.navigation.navigate("WishProductList1")}}>
+                        <View style={{flexDirection:'row'}}>
+                            <Material name={"heart"} size={25} color={constants.Colors.color_drwaerIcon}/>
+                            <Text style={styles.MenueLable}>My Wish</Text>
+                        </View>
+                    </TouchableOpacity>
+
 
                     <TouchableOpacity style={[styles.menuTab]} onPress={()=>{}}>
                         <View style={{flexDirection:'row'}}>

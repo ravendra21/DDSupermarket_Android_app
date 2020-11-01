@@ -69,7 +69,8 @@ function SingleProduct(props){
     }
 
     const wishButton =(productDetails)=>{
-        if(productDetails.is_MyWish == true){
+        
+        if(productDetails['prodetail'].is_MyWish == true){
             return(
                 <Icon name={"heart"} size={20} color={constants.Colors.color_active_wish}/>
             )

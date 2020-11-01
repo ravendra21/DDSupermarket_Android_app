@@ -31,6 +31,7 @@ const initialDataState = {appIntro:'',popup:'',
 
     wishProdList:[],
     cartItem:[],
+    subtotal:0,
     
 };
 
@@ -102,10 +103,26 @@ const data = (prevState = initialDataState, action) => {
             cartItem:[...prevState.cartItem,addItem],
             productList:updatedProductList,
         }
+        
+        case 'FETCH_CART_ITEM':
+        let fetchCartItem = action.payload;
+        let subtotalOfGettingItems=0;
+        fetchCartItem.map(item => {
+            if(item.price !='' && item.selectedQty>0){
+                subtotalOfGettingItems += parseFloat(item.price)* parseInt(item.selectedQty);
+            }
+        })
+
+        return{
+            ...prevState,
+            cartItem:fetchCartItem,
+            subtotal:subtotalOfGettingItems,
+        }
 
         case 'ADD_TO_CART':
         let addCartProdId = action.prodVariId;
-        let addItem = action.addItem;
+        let addItem = action.addItem[0];
+        let subtotalCart = prevState+addItem.price;
         let updatedProductList = prevState.productList;
         let updatedFeattureProd = prevState.featureProd;
         let existed_item= prevState.cartItem.find(item=> item.id === addCartProdId && item.selectedVariationID == addItem.deafultVariationId);
@@ -139,6 +156,7 @@ const data = (prevState = initialDataState, action) => {
 
         return{
             ...prevState,
+            subtotal:subtotalCart,
             cartItem:[...prevState.cartItem,addItem],
             productList:updatedProductList,
             featureProd:updatedFeattureProd,

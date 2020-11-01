@@ -18,10 +18,7 @@ import MyProfile from '../screens/User/MyProfile';
 import EditProfile from '../screens/User/EditProfile';
 
 import CartItemScreen from '../screens/CartScreen/CartItemScreen';
-
-
 const RootStack = createStackNavigator();
-
 const HomeStack = ({navigation}) => (
     <RootStack.Navigator initialRouteName="HomeScreen" screenOptions={{
       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
@@ -108,14 +105,14 @@ const HomeStack = ({navigation}) => (
             name={constants.Screens.WishProductList.name} component={WishProductList}
         />
 
-        <RootStack.Screen
-            options={({ navigation }) => ({
-                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_headerTile,fontSize:20}}>{constants.Screens.CartItemScreen.title}</Text>,
-                headerStyle:{shadowOpacity:0,elevation: 0},
-                headerTransparent:false,
-            })}
-            name={constants.Screens.CartItemScreen.name} component={CartItemScreen}
-        />
+        {/*<RootStack.Screen
+                    options={({ navigation }) => ({
+                        headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_headerTile,fontSize:20}}>{constants.Screens.CartItemScreen.title}</Text>,
+                        headerStyle:{shadowOpacity:0,elevation: 0},
+                        headerTransparent:false,
+                    })}
+                    name={constants.Screens.CartItemScreen.name} component={CartItemScreen}
+                />*/}
 
 
     </RootStack.Navigator>

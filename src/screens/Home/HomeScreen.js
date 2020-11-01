@@ -27,13 +27,16 @@ import ErrorBox from '../../components/ErrorBox';
 import { validate,showAlertDialog,generateOtp } from "../../constants/Utils";
 import {navigate} from '../../navigation/NavigationServices'
 import { getWeatherDetail } from "../../lib/auth";
-import { getProdcutCat,getHomeDetails} from "../../lib/data";
+import { getProdcutCat,getHomeDetails,getCartItems} from "../../lib/data";
 import Geolocation from 'react-native-geolocation-service';
 import {SingleRowSkeltons,FullRow} from '../../components/skeltons/RowSkeltons';
 import SingleRowImagSkeltons from '../../components/skeltons/SingleRowImagSkeltons';
 import SearchBox from '../../components/SearchBox';
 import SearchBar from '../../components/SearchBar';
 import Swiper from 'react-native-swiper'
+import {
+    ProgressView
+} from '../../components/loader';
 
 
 function HomeScreen(props){
@@ -44,13 +47,10 @@ function HomeScreen(props){
     });
 
     React.useEffect(() => {
-        if(data.waeatherApi == false){
-            //getLatLang();
-        }
 
-        if(props.data.prod_cat.length == 0 && data.prodCatApi == false){
-            //props.dispatch(getProdcutCat());
+        if(data.prodCatApi == false){
             props.dispatch(getHomeDetails());
+            props.dispatch(getCartItems());
             setData({
                 ...data,
                 prodCatApi: true,
@@ -294,6 +294,10 @@ const renderProdCat = () => {
 	                </View>
 	            </ScrollView>
 	    </KeyboardAwareScrollView>
+            <ProgressView
+                isProgress={props.indicator} 
+                title={"Saving..."}
+            />
 	    </SafeAreaView>
 		)
 }
