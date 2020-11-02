@@ -315,6 +315,61 @@ export const addToCart=(pordData)=>async(dispatch,getState)=>{
     })
 }
 
+export const manageProdQty = (prodData)=>async(dispatch,getState)=>{
+    //dispatch({type : 'LOADING'});
+    console.log(prodData);
+   let cartItem = getState().data.cartItem.find(item=>item.prod_id == prodData.prodVariId  && item.selectedVariationID == prodData.variation);
+   if(cartItem != undefined){
+        let url = ddenterpriseApi + 'api-manage_prod_qty';
+        let token = getState().auth.user.accessToken;
+        var data = new FormData();
+        data.append("userId", getState().auth.user.id);
+        data.append("prodId", prodData.prodVariId);
+        data.append("variation_id", prodData.variation);
+        data.append("actionType",prodData.actionType);
+        data.append("cartItemId",cartItem.cart_item_id);
+        let prodQty = parseInt(cartItem.selectedQty);
+        
+        if(prodData.actionType == "add"){
+            data.append("newQty",prodQty+1,);
+        }else{
+            data.append("newQty",prodQty-1);
+        }
+
+        let post_req = {
+            method: 'POST',
+            body: data,
+            headers: {
+            'Content-Type': 'multipart/form-data',
+             'token': token,
+            }
+        }
+
+        console.log("manageCartQty",url, post_req);
+        fetch(url, post_req)
+        .then(res =>{
+            res.json()
+            .then(response => {
+                console.log("error",response);
+                if(response.status == 1){
+                    dispatch({type:'ADD_QTY_IN_CART',prodVariId:response.prod_id ,action_type:response.action_type ,selectedVariationId:response.variationId});
+                }else{
+                    //showAlertDialog("POST is not created.Please try again");
+                    dispatch({ type : 'ERROR_SUBMIT', payload : "Not update prodty"});
+                }
+            })
+            .catch( err => {
+                    console.log("product_exception",err);
+                    dispatch({ type : 'ERROR_SUBMIT', payload : "Not update prodty"});
+            })
+        })
+        .catch( err => {
+                console.log("error" ,err);
+                dispatch({ type : 'ERROR_SUBMIT', payload : 'Something went wrong.'})
+        })    
+   }
+}
+
 export const getCartItems=(pordData)=>async(dispatch,getState)=>{
     //dispatch({type : 'LOADING'});
     let url = ddenterpriseApi + 'api-fetchCart';

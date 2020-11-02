@@ -5,7 +5,7 @@ import constants from "../constants";
 import {AddToCart,AfterAddToCart} from './button';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {navigate} from '../navigation/NavigationServices'
-import { addInWishList,addToCart } from "../lib/data";
+import { addInWishList,addToCart,manageProdQty } from "../lib/data";
 
 const ProductBlock = props => {
     
@@ -23,9 +23,9 @@ const ProductBlock = props => {
         //props.dispatch({type:'ADD_TO_CART', prodVariId:prodId , prodSelectedQty:selectedQty , variation:selectedVariationID});
     }
 
-    const chooseQuantity =(prodId ,selectedQty)=>{
-        //Alert.alert(prodId+" - "+selectedQty);
-        props.dispatch({type:'INCERASE_CART_ITEM_QTY', prodVariId:prodId , prodSelectedQty:selectedQty });
+    const chooseQuantity =(prodId ,variationId,actionType)=>{
+        console.log(prodId ,variationId,actionType);
+        props.dispatch(manageProdQty({prodVariId:prodId, variation:variationId, actionType:actionType}));
     }
 
 	return (
@@ -50,7 +50,19 @@ const ProductBlock = props => {
                 </TouchableOpacity>
                 <View>
                     { props.selectedVariationID !=""?
-                        (<AfterAddToCart title="ADD TO CART" onPress={()=>chooseQuantity(props.productId, props.selectedQty)}/>):
+                        (
+                            <View style={{flexDirection:'row',marginBottom:10}}>
+                                <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(props.productId,props.defaultVariationID ,'minus')}}>
+                                    <Icon name={'minus'} size={10} color={constants.Colors.color_WHITE}/>
+                                </TouchableOpacity>
+                                <View style={{width:30, justifyContent:'center',alignItems:'center'}}>
+                                    <Text style={{...styles.addToCartbtnTitle,fontSize:18,color:constants.Colors.color_addToCart}}>{props.selectedQty}</Text>
+                                </View>
+                                <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(props.productId,props.defaultVariationID,'add')}}>
+                                    <Icon name={'plus'} size={10} color={constants.Colors.color_WHITE}/>
+                                </TouchableOpacity>
+                            </View>
+                        ):
                         (<AddToCart title="ADD TO CART" onPress={()=>addToCartIntial(props.productId, props.selectedQty,props.defaultVariationID,props.maxsp)}/>)
                     }
                 </View>
@@ -86,6 +98,14 @@ const styles =StyleSheet.create({
         height:constants.width*0.4,
         resizeMode:'contain'
     },
+    cartIcons:{
+        backgroundColor:constants.Colors.color_addToCart,
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:4,
+        width:25,
+        height:25
+    }
 
 });
 

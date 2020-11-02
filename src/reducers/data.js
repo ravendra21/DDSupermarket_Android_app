@@ -39,10 +39,11 @@ const data = (prevState = initialDataState, action) => {
     switch (action.type) {
 
         case 'GET_HOME_DATA':
+        let featureProducts = action.payload.fproduct;
         return{
             ...prevState,
             productCat:action.payload.product_cat,
-            featureProd:action.payload.fproduct,
+            featureProd:featureProducts,
             homeSlider:action.payload.mob_slider,
             banner:action.payload.mob_slider,
 
@@ -145,7 +146,7 @@ const data = (prevState = initialDataState, action) => {
 
             if(prevState.featureProd.length >0){
                 updatedFeattureProd = prevState.featureProd.map(item => {
-                if(item.id == addCartProdId){
+                if(item.product == addCartProdId){
                     item.selectedVariationID=item.deafultVariationId;
                     item.selectedQty +=1; 
                 }
@@ -162,6 +163,78 @@ const data = (prevState = initialDataState, action) => {
             featureProd:updatedFeattureProd,
         }
     }
+
+
+        case 'ADD_QTY_IN_CART':
+        let qtyProdId = action.prodVariId;
+        let qtyAction = action.action_type;
+        let qtySelectedVariation = action.selectedVariationId;
+
+        //let qtySubtotalCart = prevState+addItem.price;
+
+        let qtyUpdatedOfProductList = prevState.productList;
+        if(prevState.productList.length >0){
+
+            qtyUpdatedOfProductList = prevState.productList.map(item => {
+                console.log(item.id+" == "+qtyProdId+" && "+item.deafultVariationId+" == "+qtySelectedVariation)
+                if(item.id == qtyProdId && item.deafultVariationId == qtySelectedVariation){
+                    if(qtyAction == 'add'){
+                        item.selectedQty +=1;
+                        console.log("prod- IN");
+                    }else{
+                        item.selectedQty -=1; 
+                        console.log("prod- OUT");
+                    }
+                }
+
+                return item;
+            });
+        }
+
+        let qtyUpdatedOfFeattureProd = prevState.featureProd;
+        if(prevState.featureProd.length >0){
+
+            qtyUpdatedOfFeattureProd = prevState.featureProd.map(item => {
+                //console.log(item.product+" == "+qtyProdId+" && "+item.deafultVariationId+" == "+qtySelectedVariation);
+                if(item.product == qtyProdId && item.deafultVariationId == qtySelectedVariation){
+                    if(qtyAction == 'add'){
+                        item.selectedQty +=1; 
+                        //console.log("Fea prod- IN",item.selectedQty);
+                    }else{
+                        item.selectedQty -=1; 
+                        //console.log("Fea prod- out");
+                    }
+                }
+
+                return item;
+            });
+        }
+
+        let qtyCartItems = prevState.cartItem;
+        if(prevState.cartItem.length >0){
+            qtyCartItems = prevState.cartItem.map(item => {
+                //console.log(item.prod_id+" == "+qtyProdId+" && "+item.selectedVariationID+" == "+qtySelectedVariation);
+                if(item.prod_id == qtyProdId && item.selectedVariationID == qtySelectedVariation){
+                    if(qtyAction == 'add'){
+                        item.selectedQty +=1; 
+                        //console.log("cart in");
+                    }else{
+                        item.selectedQty -=1; 
+                        //console.log("cart fsdf");
+                    }
+                }
+
+                return item;
+            });
+        }    
+
+        return{
+            ...prevState,
+            //subtotal:subtotalCart,
+            cartItem:qtyCartItems,
+            productList:qtyUpdatedOfProductList,
+            featureProd:qtyUpdatedOfFeattureProd,
+        }
         
 
         case 'SAVED_IN_WISH':

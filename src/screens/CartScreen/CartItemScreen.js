@@ -103,6 +103,7 @@ function CartItemScreen(props){
         let variationName = item.variation_details.find(variation=>variation.varition_detail_id == item.selectedVariationID);
         return(
             <Text style={styles.labelText}>
+                <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:16}}>{" QTY:"+item.selectedQty+" X "}</Text>
                 {variationName.varition}
             </Text>
         )
