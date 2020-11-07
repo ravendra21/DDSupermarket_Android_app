@@ -18,6 +18,7 @@ import {connect} from 'react-redux'
 import constants from "../constants";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { logout } from "../lib/auth";
 import {LocalizationContext} from '../services/localization/LocalizationContext';
 import UserProfileImage from '../components/UserProfileImage'
@@ -129,6 +130,13 @@ function DrawerSlider(props){
                         <View style={{flexDirection:'row'}}>
                             <Icon name={"bell"} size={23} color={constants.Colors.color_drwaerIcon}/>
                             <Text style={[styles.MenueLable]}>Notifications</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.MyAddress.name)}}>
+                        <View style={{flexDirection:'row'}}>
+                            <MaterialIcon name={"location-on"} size={23} color={constants.Colors.color_drwaerIcon}/>
+                            <Text style={[styles.MenueLable]}>My Addresses</Text>
                         </View>
                     </TouchableOpacity>
 

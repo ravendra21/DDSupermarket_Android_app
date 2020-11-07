@@ -17,6 +17,8 @@ import TestScreen from '../screens/Home/TestScreen';
 import MyProfile from '../screens/User/MyProfile';
 import EditProfile from '../screens/User/EditProfile';
 
+import MyAddress from '../screens/User/MyAddress';
+
 import CartItemScreen from '../screens/CartScreen/CartItemScreen';
 const RootStack = createStackNavigator();
 const HomeStack = ({navigation}) => (
@@ -103,6 +105,15 @@ const HomeStack = ({navigation}) => (
                 headerTransparent:false,
             })}
             name={constants.Screens.WishProductList.name} component={WishProductList}
+        />
+
+        <RootStack.Screen
+            options={({ navigation }) => ({
+                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_theme,fontSize:20}}>{constants.Screens.MyAddress.title}</Text>,
+                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerTransparent:false,
+            })}
+            name={constants.Screens.MyAddress.name} component={MyAddress}
         />
 
         {/*<RootStack.Screen

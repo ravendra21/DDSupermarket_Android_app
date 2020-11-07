@@ -36,9 +36,9 @@ const Screens = {
         name: `SearchProductList`,
         title: `SearchProductList`
     },
-    CropDrScreen: {
-        name: `CropDrScreen`,
-        title: `Crop Doctor`
+    MyAddress: {
+        name: `MyAddress`,
+        title: `My Address`
     },
     ContactUs: {
         name: `ContactUs`,

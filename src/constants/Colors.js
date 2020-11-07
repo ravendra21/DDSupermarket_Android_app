@@ -4,7 +4,7 @@ const Colors = {
   color_statusbar:'#F56D37',
   color_activeBottomTab:'#F56D37',
   color_inactiveIcon:"#808080",
-  color_drwaerIcon:"#808080",
+  color_drwaerIcon:"#000",
   color_addToCart:"#F56D37",
   color_main_heading:'#99A7B0',
   color_searchBox:'#F56D37',

@@ -40,6 +40,23 @@ export const PrimaryTextInput = (props) => {
     );
 }
 
+
+export const SquareTextInput = (props) => {
+    return (
+        <View style={{marginTop:10}}>
+            <Text style={styles.textInputTitle}>{props.title}</Text>
+            <View style={styles.inputTextSquareBox}>
+                <TextInput
+                    {...props}
+                    selectionColor={constants.Colors.color_BLACK}
+                    style={[{ fontFamily: constants.fonts.Cardo_Regular,color:constants.Colors.color_BLACK}, styles.text]}
+                />
+            </View>
+        </View>
+    );
+}
+
+
 export const RoundedTextInput = (props) => {
     return (
         <View>
@@ -88,7 +105,7 @@ export const PasscodeTextInput = (props) => {
 }
 
 const styles = StyleSheet.create({
-    textInputTitle: {
+    textInputTitle:{
         color: constants.Colors.color_intro,
         fontFamily: constants.fonts.Cardo_Regular,
         fontSize: 14
@@ -98,6 +115,13 @@ const styles = StyleSheet.create({
         marginTop: 14,
         height: 50,
         borderColor: constants.Colors.color_WHITE
+    },
+    inputTextSquareBox: {
+        borderWidth: 1,
+        borderRadius:10,
+        marginTop: 4,
+        height: 50,
+        borderColor: constants.Colors.color_theme
     },
     roundedTextBox: {
         borderWidth: 1,

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "246582908079",
+    "firebase_url": "https://ddsupermart-9a317.firebaseio.com",
+    "project_id": "ddsupermart-9a317",
+    "storage_bucket": "ddsupermart-9a317.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246582908079:android:8ed0d3326e70f2b0a9305a",
+        "android_client_info": {
+          "package_name": "com.ddspuermarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246582908079-jg84l5rn3ciqj0q5otohtq79r69uhou1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ddspuermarket",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "246582908079-kr0k64vhdbck7a2at0k3n6vt4age8ne7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbeTKRCI9Odw4Va0_6RdYr4YHKMHcOeB0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246582908079-kr0k64vhdbck7a2at0k3n6vt4age8ne7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
