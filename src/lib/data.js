@@ -532,3 +532,131 @@ export const removeWishProduct=(pordData)=>async(dispatch,getState)=>{
             dispatch({ type : 'ERROR_SUBMIT', payload : 'Something went wrong.'})
     })
 }
+
+
+export const addNewAddress=(pordData)=>async(dispatch,getState)=>{
+    dispatch({type : 'LOADING'});
+    let url = ddenterpriseApi + 'api-add_address';
+    let token = getState().auth.user.accessToken;
+    var data = new FormData();
+    data.append("userId", getState().auth.user.id);
+    data.append("contactName", pordData.name);
+    data.append("contactMobile", pordData.mobile);
+    data.append("address", pordData.address);
+
+    data.append("district", pordData.district);
+    data.append("state", pordData.State);
+    data.append("pincode", pordData.pincode);
+    data.append("address_id",pordData.address_id);
+
+    let post_req = {
+        method: 'POST',
+        body: data,
+        headers: {
+        'Content-Type': 'multipart/form-data',
+         'token': token,
+        }
+    }
+
+    console.log(url, post_req);
+    fetch(url, post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            if(response.status == 1){
+                dispatch({ type : 'SAVED_ADDRESS', newAddressList:response.addressList});
+                dispatch({ type : 'ERROR_SUBMIT', payload : "address saved"});
+            }else{
+                console.log("error",response);
+                dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+            }
+        })
+        .catch( err => {
+            console.log("product_exception",err);
+            dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+        })
+    })
+    .catch( err => {
+            console.log("error" ,err);
+            dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+    })
+}
+
+export const getAddress=(pordData)=>async(dispatch,getState)=>{
+    dispatch({type : 'LOADING'});
+    let url = ddenterpriseApi + 'api-get_address';
+    let token = getState().auth.user.accessToken;
+    var data = new FormData();
+    data.append("userId", getState().auth.user.id);
+
+    let post_req = {
+        method: 'POST',
+        body: data,
+        headers: {
+        'Content-Type': 'multipart/form-data',
+         'token': token,
+        }
+    }
+
+    console.log(url, post_req);
+    fetch(url, post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            if(response.status == 1){
+                dispatch({ type : 'SAVED_ADDRESS', newAddressList:response.addressList});
+            }else{
+                console.log("error",response);
+                dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+            }
+        })
+        .catch( err => {
+            console.log("product_exception",err);
+            dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+        })
+    })
+    .catch( err => {
+            console.log("error" ,err);
+            dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+    })
+}
+
+export const removeAddress=(pordData)=>async(dispatch,getState)=>{
+    dispatch({type : 'LOADING'});
+    let url = ddenterpriseApi + 'api-remove_address';
+    let token = getState().auth.user.accessToken;
+    var data = new FormData();
+    data.append("userId", getState().auth.user.id);
+    data.append("address_id", pordData.address_id);
+
+    let post_req = {
+        method: 'POST',
+        body: data,
+        headers: {
+        'Content-Type': 'multipart/form-data',
+         'token': token,
+        }
+    }
+
+    console.log(url, post_req);
+    fetch(url, post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            if(response.status == 1){
+                dispatch({ type : 'SAVED_ADDRESS', newAddressList:response.addressList});
+            }else{
+                console.log("error",response);
+                dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+            }
+        })
+        .catch( err => {
+            console.log("product_exception",err);
+            dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+        })
+    })
+    .catch( err => {
+            console.log("error" ,err);
+            dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
+    })
+}

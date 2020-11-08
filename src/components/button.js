@@ -15,7 +15,7 @@ import {
   MenuTrigger,
   renderers,
 } from 'react-native-popup-menu';
-const { SlideInMenu } = renderers;
+const { SlideInMenu,Popover } = renderers;
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
 
 
 export const DefaultMenuOption = props => {
-
     return (
         <Menu renderer={SlideInMenu} >
             <MenuTrigger>
@@ -104,6 +103,27 @@ export const DefaultMenuOption = props => {
                 <MenuOption {...props} style={{flexDirection:'row'}}>
                     <Icon name={'trash-can'} size={25} color={constants.Colors.color_WHITE}/>
                     <Text style={styles.dropOpt}>Remove</Text>
+                </MenuOption>
+            </MenuOptions>
+        </Menu>
+    )
+}
+
+export const AddressMenuOption = props => {
+
+    return (
+        <Menu renderer={Popover} >
+            <MenuTrigger>
+                <View style={{borderRadius:12,borderColor:constants.Colors.color_threeDot,borderWidth:1,width:24,height:24,justifyContent:'center',alignItems:'center'}}>
+                <Icon name={'dots-vertical'} size={20} color={constants.Colors.color_theme}/>
+                </View>
+            </MenuTrigger>
+            <MenuOptions style={{width:constants.width*0.5,padding:10,borderTopLeftRadius:20,borderTopRightRadius:20}}>
+                <MenuOption {...props} style={{flexDirection:'row'}} {...props}>
+                    <Text style={{...styles.dropOpt,color:constants.Colors.color_theme}}>Edit</Text>
+                </MenuOption>
+                <MenuOption {...props} style={{flexDirection:'row'}}>
+                    <Text style={{...styles.dropOpt,color:constants.Colors.color_theme}}>Remove</Text>
                 </MenuOption>
             </MenuOptions>
         </Menu>
@@ -168,4 +188,14 @@ export const AddToCartBg = (props) => {
             </TouchableOpacity>
         </View>
     );
+}
+
+
+export const IconBtn = (props)=>{
+    return(
+        <TouchableOpacity style={{flexDirection:'row',borderWidth:1,borderRadius:10,borderColor:constants.Colors.color_theme,padding:10,backgroundColor:constants.Colors.color_theme}} {...props}>
+            <Icon name={"plus"} size={16} color={constants.Colors.color_drwaerIcon} style={{paddingTop:5}}/>
+            <Text style={{fontFamily:constants.fonts.Cardo_Regular,color:constants.Colors.color_WHITE,paddingLeft:10,fontSize:16}}>{props.title}</Text>
+        </TouchableOpacity>
+    )
 }

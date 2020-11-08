@@ -1,5 +1,5 @@
 import {setUserToStorage,getUserFromStorage,unsetUserFromStorage, getUserAccessTokenFromStorage,setUserAccessTokenToStorage,
-unsetUserAccessTokenFromStorage} from '../services/async-storage'
+unsetUserAccessTokenFromStorage,getDeviceDetails} from '../services/async-storage'
 import {navigateWithOutParams} from '../navigation/NavigationServices'
 import constants from '../constants';
 import {weburl,ddenterpriseApi} from '../constants/url'

@@ -32,6 +32,8 @@ const initialDataState = {appIntro:'',popup:'',
     wishProdList:[],
     cartItem:[],
     subtotal:0,
+
+    addressList:[]
     
 };
 
@@ -53,6 +55,12 @@ const data = (prevState = initialDataState, action) => {
         return{
             ...prevState,
             productList:action.payload
+        }
+
+        case 'SAVED_ADDRESS':
+        return{
+            ...prevState,
+            addressList:action.newAddressList,
         }
 
         case 'SEARCHING_PRODUCT':

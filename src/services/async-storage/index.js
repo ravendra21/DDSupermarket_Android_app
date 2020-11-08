@@ -1,5 +1,22 @@
 import { writeStorage, readStorage, removeAllStorage, removeStorage } from './Model';
 
+export const setDeviceDetails = async (value) =>{
+  return new Promise(function(resolve) {
+    resolve(writeStorage('USER_DEVICE_DETAIL', value));
+  });
+}
+
+
+/*
+ * [getUserAccessToken functions get user value from Token]  
+ * @return {value}   
+*/
+export const getDeviceDetails = async () =>{
+  return new Promise(function(resolve) {
+    resolve(readStorage('USER_DEVICE_DETAIL'));
+  });
+}
+
 
 /*
  * [setUserAccessToken functions set value of Token]

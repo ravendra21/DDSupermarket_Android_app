@@ -9,11 +9,13 @@ import {
     SafeAreaView,
     ScrollView,
     Keyboard,
-    TouchableOpacity
+    TouchableOpacity,
+    Image
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Animatable from 'react-native-animatable'
 import {connect} from 'react-redux'
+import {getDeviceDetails} from '../../services/async-storage'
 
 import { PrimaryTextInput,TextScreenHeader} from '../../components/textInputs'; 
 import constants from "../../constants";
@@ -59,12 +61,15 @@ function SIGNIN(props){
 
 	return(
 		<SafeAreaView style={styles.container}>
-		      <KeyboardAwareScrollView 
+{/*            <View style={styles.backgroundContainer}>
+                <Image style={styles.bakcgroundImage} source={constants.image.loginImage} />
+            </View>*/}
+		    <KeyboardAwareScrollView 
 		      		keyboardShouldPersistTaps={'handled'}
 		      		extraScrollHeight={140}
 		      		enableOnAndroid={true}
 	     	 	>
-	        	<StatusBar backgroundColor={constants.Colors.color_statusbar} barStyle="dark-content"/>
+	        	<StatusBar backgroundColor={constants.Colors.color_theme} barStyle="dark-content"/>
 	            <ScrollView keyboardShouldPersistTaps={'handled'}>
 
 	                <View style={{...styles.contentContainer,backgroundColor:constants.Colors.color_WHITE,padding:10,marginTop:constants.vh(30)}}>
@@ -84,10 +89,8 @@ function SIGNIN(props){
 
                         <LayoutButton  onPress={()=> loginHandle(data.email)} title="NEXT"/>
 	                </View>
-	                
 	            </ScrollView>   
 	    </KeyboardAwareScrollView>
-
         <ProgressView 
             isProgress={props.indicator} 
             title={constants.progressMessages.SIGNUP}
@@ -98,9 +101,10 @@ function SIGNIN(props){
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1, 
-      backgroundColor: constants.Colors.color_auth_bg,
-      
+        flex: 1,
+        backgroundColor: constants.Colors.color_auth_bg,
+        alignItems: 'center',
+        justifyContent: 'flex-end',   
     },
     letsBegin: {width: '85%', alignSelf: 'center'},
     bg_top: {
@@ -115,7 +119,8 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         paddingTop: 31,
-        width: '85%', alignSelf: 'center',
+        width: '90%',
+        alignSelf: 'center',
     },
     login_button: {
         marginTop: 50,
@@ -131,7 +136,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 28,
         fontFamily: constants.fonts.FUTURASTD_BOLD
-    }
+    },
+    backgroundContainer: {
+        flex: 1,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+    }, 
+    bakcgroundImage: {
+        flex: 1, 
+        width: null, 
+        height: null,
+        resizeMode:'cover'
+    },
   });
 
 function mapDispatchToProps(dispatch) {

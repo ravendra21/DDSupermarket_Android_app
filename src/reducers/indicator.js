@@ -23,6 +23,7 @@ const indicator = (state = false, action) => {
         case 'REMOVE_WISH_PRODUCT':
         case 'ADD_TO_CART':
         case 'FETCH_CART_ITEM':
+        case 'SAVED_ADDRESS':
             return false;
         default :
             return state;

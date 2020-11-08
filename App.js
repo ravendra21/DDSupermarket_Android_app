@@ -8,20 +8,21 @@ import {connect} from "react-redux";
 import { navigationRef } from './src/navigation/NavigationServices'
 
 // import MainTabScreen from './src/navigations/MainTabScreen';
-import RootStackScreen from './src/navigation/RootStackScreen';
-import SplashScreenStack from './src/navigation/SplashScreenStack';
+import RootStackScreen from './src/navigation/RootStackScreen'
+import SplashScreenStack from './src/navigation/SplashScreenStack'
 import AppIntroStackScreen from './src/navigation/AppIntroStackScreen';
-import DrawerScreen from './src/navigation/DrawerScreen';
-import {switchRootScreen} from './src/lib/auth';
+import DrawerScreen from './src/navigation/DrawerScreen'
+import {switchRootScreen} from './src/lib/auth'
+import {setDeviceDetails} from './src/services/async-storage'
 
 import PushNotificationIOS from "@react-native-community/push-notification-ios"
 var PushNotification = require("react-native-push-notification");
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
-  onRegister: function (deviceTokenData) {
+  onRegister: function (deviceTokenData){
     console.log("TOKEN:", deviceTokenData);
     //AsyncStorage.setItem('DEVICE_TOKEN', JSON.stringify(deviceTokenData));
-    
+    setDeviceDetails(JSON.stringify(deviceTokenData));
   },
  
   // (required) Called when a remote is received or opened, or local notification is opened

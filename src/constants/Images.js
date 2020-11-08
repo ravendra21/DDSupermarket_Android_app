@@ -22,6 +22,7 @@ export default {
 //Drawer slider
    drawerSliderBg:require("../images/drawerSliderBr_2.jpg"),
 
+   loginImage:require("../images/loginImage.png"),
 
 //contact us
     contactus:require("../images/contactus.png"),

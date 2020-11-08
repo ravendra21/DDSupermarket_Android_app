@@ -44,7 +44,7 @@ export const PrimaryTextInput = (props) => {
 export const SquareTextInput = (props) => {
     return (
         <View style={{marginTop:10}}>
-            <Text style={styles.textInputTitle}>{props.title}</Text>
+            <Text style={{color: constants.Colors.color_BLACK,fontFamily: constants.fonts.Cardo_Regular,fontSize: 14}}>{props.title}</Text>
             <View style={styles.inputTextSquareBox}>
                 <TextInput
                     {...props}
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         borderRadius:10,
         marginTop: 4,
         height: 50,
-        borderColor: constants.Colors.color_theme
+        borderColor: constants.Colors.color_BLACK
     },
     roundedTextBox: {
         borderWidth: 1,
