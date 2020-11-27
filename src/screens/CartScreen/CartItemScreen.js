@@ -12,23 +12,25 @@ import {
     TouchableOpacity,
     Image,
     PermissionsAndroid,
-    Platform
-} from 'react-native';
+    Platform,
+    ToastAndroid
+} from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Animatable from 'react-native-animatable'
 import {connect} from 'react-redux'
-import { PrimaryTextInput,TextScreenHeader} from '../../components/textInputs';
-import ProductBlock from '../../components/ProductBlock';
-import constants from "../../constants";
-import {prod_image,prod_variation_url} from "../../constants/url";
-import { PrimaryButton,DefaultMenuOption} from "../../components/button";
+import { PrimaryTextInput,TextScreenHeader} from '../../components/textInputs'
+import ProductBlock from '../../components/ProductBlock'
+import constants from "../../constants"
+import {prod_image,prod_variation_url} from "../../constants/url"
+import { PrimaryButton,DefaultMenuOption} from "../../components/button"
 import ErrorBox from '../../components/ErrorBox';
-import { validate,showAlertDialog,generateOtp } from "../../constants/Utils";
+import EmptyBox from '../../components/EmptyBox';
+import { validate,showAlertDialog,generateOtp} from "../../constants/Utils"
 import {navigateWithOutParams} from '../../navigation/NavigationServices'
-import { removeWishProduct,getWishList,getCartItems} from "../../lib/data";
-import {SingleRowSkeltons,FullRow,ProductBlockSkelton} from '../../components/skeltons/RowSkeltons';
-import SingleRowImagSkeltons from '../../components/skeltons/SingleRowImagSkeltons';
+import { manageProdQty,getCartItems} from "../../lib/data"
+import {SingleRowSkeltons,FullRow,ProductBlockSkelton} from '../../components/skeltons/RowSkeltons'
+import SingleRowImagSkeltons from '../../components/skeltons/SingleRowImagSkeltons'
 import SearchBox from '../../components/SearchBox'
 import {
     ProgressView
@@ -41,7 +43,7 @@ import {
 //   renderers,
 // } from 'react-native-popup-menu';
 // const { SlideInMenu } = renderers;
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 function CartItemScreen(props){
     const [data, setData] = React.useState({
@@ -65,18 +67,28 @@ function CartItemScreen(props){
 
       });
 
+    const redirectOnPayment=()=>{
+        props.navigation.navigate(constants.Screens.PaymentOptionScreen.name);
+    }
+
     const checkOutButton=()=>{
         let subTotal = props.data.subtotal;
         let total = subTotal;
+        let prod_cat_item =  props.data.cartItem;
+        if(prod_cat_item.length>0){
         return(
             <View style={styles.checkoutBtn}>
-                <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-evenly'}}>
+                <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-evenly'}} onPress={()=>{redirectOnPayment()}}>
                     <Text style={[styles.checkout]}>CHECKOUT </Text>
                     <Text style={styles.checkout}> Rs. {total} </Text> 
                 </TouchableOpacity>
             </View>
                     
-        )
+        )}else{
+            return(
+                <View/>
+            )
+        }
     }
 
     const viewSingleProd =(prodId, actionType,slug)=>{
@@ -108,6 +120,23 @@ function CartItemScreen(props){
             </Text>
         )
     }
+    
+    const chooseQuantity =(prodId ,variationId,actionType,selectedQty)=>{
+        console.log(prodId ,variationId,actionType,"selectedQty=>",selectedQty);
+        if(selectedQty>1 && actionType =="minus"){
+            props.dispatch(manageProdQty({prodVariId:prodId, variation:variationId, actionType:actionType}));
+        }else if(selectedQty>=1 && actionType =="add"){
+            props.dispatch(manageProdQty({prodVariId:prodId, variation:variationId, actionType:actionType}));
+        }else{
+            ToastAndroid.showWithGravityAndOffset(
+              "At Least add one item.",
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+              25,
+              50
+            );
+        }
+    }
 
 	const renderProdCat = () => {
         let prod_cat_item =  props.data.cartItem;
@@ -133,10 +162,24 @@ function CartItemScreen(props){
                                     <View style={{flexDirection:'row'}}>
                                             {showSelectedVariation(item)}
                                     </View>
-                                    <View>
-                                        <TouchableOpacity style={{borderWidth:1,borderRadius:5,borderColor:constants.Colors.color_lineGrey,padding:3,width:70,elevation:3,backgroundColor:constants.Colors.color_WHITE}}>
-                                            <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:16}}> Remove </Text>
-                                        </TouchableOpacity>
+                                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                                        <View style={{flexDirection:'row',marginBottom:10}}>
+                                            <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(item.prod_id,item.selectedVariationID ,'minus',item.selectedQty)}}>
+                                                <Icon name={'minus'} size={10} color={constants.Colors.color_WHITE}/>
+                                            </TouchableOpacity>
+                                            <View style={{width:30, justifyContent:'center',alignItems:'center'}}>
+                                                <Text style={{...styles.addToCartbtnTitle,fontSize:18,color:constants.Colors.color_addToCart}}>{item.selectedQty}</Text>
+                                            </View>
+                                            <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(item.prod_id,item.selectedVariationID,'add',item.selectedQty)}}>
+                                                <Icon name={'plus'} size={10} color={constants.Colors.color_WHITE}/>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <View>
+                                            <TouchableOpacity style={{borderWidth:1,borderRadius:5,borderColor:constants.Colors.color_lineGrey,padding:3,width:70,elevation:3,backgroundColor:constants.Colors.color_WHITE}}>
+                                                <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:16}}> Remove </Text>
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
@@ -151,11 +194,35 @@ function CartItemScreen(props){
                 </View>
             )
         }else{
-            return(
-                    <View style={{flex:1,width:'90%',alignSelf:'center',justifyContent:'center', alignItems:'center'}}>
-                        <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:20,marginTop:constants.height/4}}>Your cart is empty.</Text>
+            if(props.error.err == "Your Cart is empty" && prod_cat_item.length == 0){
+                return(
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center',marginTop:constants.height*0.09,marginBottom:constants.vh(20)}}>
+                        <EmptyBox imageUrl={constants.image.emptyCart} 
+                            button_title={"SHOP NOW"}
+                            mainHeading={"Your Cart is empty !"}
+                            subHeading={"Explore More and shortlist some items."}
+                            onPress={()=>{props.navigation.navigate(constants.Screens.HomeScreen.name, { screen: constants.Screens.HomeScreen.name })}}
+                        />
                     </View>
-            )
+                )
+            }else{
+                if(props.error.err == "getting error in cart" && prod_cat_item.length == 0){
+                    return(
+                        <View style={{flex:1,width:'90%',alignSelf:'center',justifyContent:'center', alignItems:'center'}}>
+                            <ErrorBox
+                                errorMessage={"Somthing went wrong. Please try again later"}
+                                onPress={()=>{props.dispatch(getCartItems())}}
+                           />
+                        </View>
+                    )
+                }else{
+                    return(
+                            <View style={{flex:1,width:'90%',alignSelf:'center',justifyContent:'center', alignItems:'center'}}>
+                                <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:20,marginTop:constants.height/4}}>Loading...</Text>
+                            </View>
+                    )
+                }
+            }
         }
     }
     
@@ -174,7 +241,7 @@ function CartItemScreen(props){
                       {renderProdCat()}
                   </View>
               </ScrollView>
-      </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView>
         <ProgressView
             isProgress={props.indicator} 
             title={"Fetching..."}
@@ -241,6 +308,14 @@ const styles = StyleSheet.create({
         elevation:60,
         padding:7
     },
+    cartIcons:{
+        backgroundColor:constants.Colors.color_addToCart,
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:4,
+        width:25,
+        height:25
+    }
   });
 
 function mapDispatchToProps(dispatch) {

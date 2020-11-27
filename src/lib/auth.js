@@ -117,10 +117,23 @@ export const logout = (data) => async(dispatch,getState) => {
 
 export const sendOTP = (data) => async(dispatch,getState) => {
     dispatch({type : 'LOADING'});
-    let url = weburl + 'api-sendOtp?mobile='+data.mobile+"&otp="+data.otp
-    console.log(url);
+    let url = ddenterpriseApi + 'api-sendOtp';
+    
+    var req_attribute = new FormData();
+    req_attribute.append("mobile",data.mobile);
+    req_attribute.append("otp",data.otp);
 
-    fetch(url)
+    let post_req = {
+        method: 'POST',
+        body: req_attribute,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+        }
+    }
+
+    console.log(url,post_req);
+    fetch(url,post_req)
     .then(res =>{
         res.json()
         .then(response => {
@@ -160,8 +173,8 @@ export const login = (data) => async(dispatch,getState) => {
             if(response.status == "1"){
                 var user = {
                     "accessToken": response.token,
-                    "device_token": null,
-                    "device_type": null,
+                    "device_token": getState().auth.user.device_token,
+                    "device_type": getState().auth.user.device_type,
                     "email": response.user['email'],
                     "first_name": response.user['first_name'],
                     "id": response.user['id'],
@@ -210,42 +223,10 @@ export const setAppLanguageInRedux = (data) => async(dispatch,getState) => {
     //dispatch({type : 'LOGOUT_SUCCESS'});
 }
 
-export const getWeatherDetails=(data)=>async(dispatch,getState)=>{
-    //dispatch({type : 'LOADING'});
-    let url = weburl + 'api-getWeather?lat='+data.lat+"&lng="+data.lng;
-    console.log(url);
-
-    fetch(url)
-    .then(res =>{
-        res.json()
-        .then(response => {
-            console.log("weather",response);
-            if(response.status == "1"){
-                dispatch({ type : 'WEATHER_INFO', payload : response.weatherData,});
-                // navigateWithOutParams(constants.Screens.OTPScreen.name);
-            }else{
-                dispatch({ type : 'ERROR_SUBMIT', payload : "Not get weather"});
-                //showAlertDialog(constants.AppConstant.something_went_wrong_message)
-            }
-        })
-        .catch( err => {
-            dispatch({ type : 'ERROR_SUBMIT', payload : "Not get weather"});
-             //showAlertDialog(constants.AppConstant.something_went_wrong_message)
-        })
-    })
-    .catch( err => {
-        console.log("last");
-            dispatch({ type : 'ERROR_SUBMIT', payload : 'Something went wrong.'})
-            // showAlertDialog(response.message)
-            //navigateWithOutParams("internetError");
-    })   
-}
-
 export const updateUserDetail =(user_data)=>async(dispatch,getState)=>{
     dispatch({type : 'LOADING'});
     console.log("user_data" ,user_data);
-    // console.log("Accesss token",getState().auth.user.accessToken);
-    let url = weburl + 'api-updateProfile';
+    let url = ddenterpriseApi + 'api-updateUserProfile';
     let token = getState().auth.user.accessToken;
 
     var data = new FormData();
@@ -256,16 +237,16 @@ export const updateUserDetail =(user_data)=>async(dispatch,getState)=>{
     data.append("first_name", user_data.first_name);
     data.append("last_name", user_data.last_name);
     
-    let imgData = user_data.selectedImage;
+    // let imgData = user_data.selectedImage;
     
-    if(imgData !=""){
-        data.append('post_image', {
-            uri: Platform.OS === 'ios' ? `file:///${imgData.path}` : imgData.path,
-            type: imgData.mime,
-            name: 'userProfile-'+getState().auth.user.id+'.jpg',
-            size: imgData.size
-        });
-    }
+    // if(imgData !=""){
+    //     data.append('post_image', {
+    //         uri: Platform.OS === 'ios' ? `file:///${imgData.path}` : imgData.path,
+    //         type: imgData.mime,
+    //         name: 'userProfile-'+getState().auth.user.id+'.jpg',
+    //         size: imgData.size
+    //     });
+    // }
 
     let post_req = {
         method: 'POST',
@@ -286,8 +267,8 @@ export const updateUserDetail =(user_data)=>async(dispatch,getState)=>{
 
                 var user = {
                     "accessToken": getState().auth.user.accessToken,
-                    "device_token": null,
-                    "device_type": null,
+                    "device_token":  getState().auth.user.device_token,
+                    "device_type": getState().auth.user.device_type,
                     "email": response.user['email'],
                     "first_name": response.user['first_name'],
                     "id": response.user['id'],
@@ -314,5 +295,38 @@ export const updateUserDetail =(user_data)=>async(dispatch,getState)=>{
             console.log("error" ,err);
             dispatch({ type : 'ERROR_SUBMIT', payload : 'Something went wrong.'})
     })
+
+}
+
+
+export const checkDelivery= (data) => async(dispatch,getState) => {
+    dispatch({type : 'LOADING'});
+    let url = ddenterpriseApi + 'api-current-loc?lat='+data.lat+"&lng="+data.lng;
+    console.log(url);
+    fetch(url)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            console.log(response);
+            if(response.status == "1"){
+                if(response.available != "NOT"){
+                    dispatch({type:'DISABLE_LOADER'});
+                    showAlertDialog(response.message);
+                }else{
+                    dispatch({ type : 'LOCATION_FETCHED',  address : response.address, pincode:response.pincode });
+                }
+    
+            }else{
+                dispatch({ type : 'ERROR_SUBMIT', payload : response.message});
+            }
+        })
+        .catch( err => {
+            dispatch({ type : 'EXCEPTION_ERROR_SUBMIT'});
+        })
+    })
+    .catch( err => {
+        dispatch({ type : 'NETWORK_ERROR', payload : 'Network Error'})
+        navigate("internetError");
+    });
 
 }

@@ -14,14 +14,14 @@ const RootStackScreen = ({navigation}) => (
             options={({ navigation }) => ({
                 headerTitle: false,
                 headerStyle:{backgroundColor: constants.Colors.color_theme,},
-                headerTransparent:false,
+                headerTransparent:true,
             })}
         	name={constants.Screens.SignInScreen.name} component={SignInScreen}/>
         <RootStackAuth.Screen 
         	options={({ navigation }) => ({
                 headerTitle: false,
                 headerStyle:{backgroundColor: constants.Colors.color_theme,},
-                headerTransparent:false,
+                headerTransparent:true,
             })}
         name={constants.Screens.OTPScreen.name} component={OTP.OTPScreen}/>
     </RootStackAuth.Navigator>

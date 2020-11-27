@@ -3,6 +3,7 @@ const indicator = (state = false, action) => {
         case 'LOADING' :
             return true;
         case 'ERROR_SUBMIT':
+        case 'FETCH_ORDER_LIST':
         case 'OTP_SEND':
         case "FETCH_ORDER_DETAILS":
         case "LOGIN_SUCCESS":
@@ -12,7 +13,7 @@ const indicator = (state = false, action) => {
         case "PRODUCT_CAT":
         case "DISABLE_LOADER":
         case "GET_POSTS":
-        case "GET_COMMENTS":
+        case "LOCATION_FETCHED":
         case "UPDATED_PROFILE":
         case 'CREATED_NEW_GROUP':
         case 'FTECH_PRODUCT_LIST':
@@ -24,6 +25,12 @@ const indicator = (state = false, action) => {
         case 'ADD_TO_CART':
         case 'FETCH_CART_ITEM':
         case 'SAVED_ADDRESS':
+        case 'ORDER_SUCCESSFULL':
+        case 'EXCEPTION_ERROR_SUBMIT':
+        case 'NETWORK_ERROR':
+        case 'ORDER_SUCCESSFULL':
+        case "COUPON_CODE_VALIDATE":
+        case "ERROR_COUPON_CODE":
             return false;
         default :
             return state;

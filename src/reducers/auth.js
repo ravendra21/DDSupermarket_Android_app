@@ -21,7 +21,15 @@ let initalstate = {
 
 const auth = (prevState = initalstate, action) => {
     switch (action.type) {
-
+      case 'SET-DEVICE_TOKEN':
+      return{
+        ...prevState,
+        user: {
+            ...prevState.user,
+            device_token: action.token,
+            device_type: action.os,
+          },
+      }
       case 'AUTH_SWITCH_ROOT':
       return{
         ...prevState,
@@ -92,12 +100,9 @@ const auth = (prevState = initalstate, action) => {
         //console.log("reducer",action.update_user);
         return{
           ...prevState,
-          // otp:'',
           user: {
             ...prevState.user,
             accessToken:action.update_user.token,
-            device_token: null,
-            device_type: null,
             email:action.update_user.email,
             first_name:action.update_user.first_name,
             image:action.update_user.image,

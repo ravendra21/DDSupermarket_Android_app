@@ -9,6 +9,7 @@ const Please_enter_description = `Description field cannot be empty.`;
 const fillAllFileds = 'Please Fill all require data.';
 const Correct_Mobile ='Please fill 10 digit mobile number.';
 const WrongOtp ='Please enter correct OTP.';
+const AppName = 'DDSuperMart';
 
 const platformType = {
   ios: "ios",
@@ -28,4 +29,5 @@ export default {
   fillAllFileds,
   Correct_Mobile,
   WrongOtp,
+  AppName,
 };

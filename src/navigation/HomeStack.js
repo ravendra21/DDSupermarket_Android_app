@@ -18,8 +18,13 @@ import MyProfile from '../screens/User/MyProfile';
 import EditProfile from '../screens/User/EditProfile';
 
 import MyAddress from '../screens/User/MyAddress';
+import PaymentOptionScreen from '../screens/CartScreen/PaymentOptionScreen';
 
 import CartItemScreen from '../screens/CartScreen/CartItemScreen';
+import OrderSuccuess from '../screens/CartScreen/OrderSuccuess';
+import OrderList from '../screens/User/OrderList'
+import OrderDetails from '../screens/User/OrderDetails'
+
 const RootStack = createStackNavigator();
 const HomeStack = ({navigation}) => (
     <RootStack.Navigator initialRouteName="HomeScreen" screenOptions={{
@@ -109,21 +114,52 @@ const HomeStack = ({navigation}) => (
 
         <RootStack.Screen
             options={({ navigation }) => ({
-                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_theme,fontSize:20}}>{constants.Screens.MyAddress.title}</Text>,
+                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.MyAddress.title}</Text>,
                 headerStyle:{shadowOpacity:0,elevation: 0},
                 headerTransparent:false,
             })}
             name={constants.Screens.MyAddress.name} component={MyAddress}
         />
 
-        {/*<RootStack.Screen
-                    options={({ navigation }) => ({
-                        headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_headerTile,fontSize:20}}>{constants.Screens.CartItemScreen.title}</Text>,
-                        headerStyle:{shadowOpacity:0,elevation: 0},
-                        headerTransparent:false,
-                    })}
-                    name={constants.Screens.CartItemScreen.name} component={CartItemScreen}
-                />*/}
+        <RootStack.Screen
+            options={({ navigation }) => ({
+                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.PaymentOptionScreen.title}</Text>,
+                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerTransparent:false,
+            })}
+            name={constants.Screens.PaymentOptionScreen.name} component={PaymentOptionScreen}
+        />
+
+        <RootStack.Screen
+            options={({ navigation }) => ({
+                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.OrderList.title}</Text>,
+                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerTransparent:false,
+            })}
+            name={constants.Screens.OrderList.name} component={OrderList}
+        />
+
+        <RootStack.Screen
+            options={({ navigation }) => ({
+                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.OrderDetails.title}</Text>,
+                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerTransparent:false,
+            })}
+            name={constants.Screens.OrderDetails.name} component={OrderDetails}
+        />
+
+        <RootStack.Screen
+            options={({ navigation }) => ({
+                headerTitle: null,
+                headerLeft:false,
+                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerTransparent:false,
+            })}
+
+        name={constants.Screens.OrderSuccuess.name} component={OrderSuccuess}
+        />
+
+
 
 
     </RootStack.Navigator>

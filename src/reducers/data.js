@@ -33,12 +33,28 @@ const initialDataState = {appIntro:'',popup:'',
     cartItem:[],
     subtotal:0,
 
-    addressList:[]
+    addressList:[],
+    defaultAddress:"",
+
+    coupon_msg:'',
+    coupon_value:'',
+    coupon_id:'',
+    orderList:[],
+
+    currentAddress:'',
+    currentPincode:'',
     
 };
 
 const data = (prevState = initialDataState, action) => {
     switch (action.type) {
+
+        case 'LOCATION_FETCHED':
+        return{
+            ...prevState,
+            currentAddress:action.address,
+            currentPincode:action.pincode
+        }
 
         case 'GET_HOME_DATA':
         let featureProducts = action.payload.fproduct;
@@ -48,7 +64,40 @@ const data = (prevState = initialDataState, action) => {
             featureProd:featureProducts,
             homeSlider:action.payload.mob_slider,
             banner:action.payload.mob_slider,
+        }
 
+        case 'FETCH_ORDER_LIST':
+        return{
+            ...prevState,
+            orderList:action.orderList,
+        }
+
+        case 'ORDER_SUCCESSFULL':
+        return{
+            ...prevState,
+            cartItem:[],
+        }
+
+        case 'COUPON_CODE_VALIDATE':
+        return{
+            ...prevState,
+            coupon_msg:action.payload,
+            coupon_value:action.coopunValue,
+            coupon_id:action.coupon_id,
+        }
+
+        case "ERROR_COUPON_CODE":
+        return{
+            ...prevState,
+            coupon_msg:action.payload,
+            coupon_value:'',
+            coupon_id:'',
+        }
+
+        case 'SET_DELIVERY_DATE':
+        return{
+            ...prevState,
+            defaultAddress:action.address,
         }
 
         case 'FTECH_PRODUCT_LIST':
@@ -61,6 +110,8 @@ const data = (prevState = initialDataState, action) => {
         return{
             ...prevState,
             addressList:action.newAddressList,
+            currentAddress:'',
+            currentPincode:'',
         }
 
         case 'SEARCHING_PRODUCT':
@@ -131,7 +182,7 @@ const data = (prevState = initialDataState, action) => {
         case 'ADD_TO_CART':
         let addCartProdId = action.prodVariId;
         let addItem = action.addItem[0];
-        let subtotalCart = prevState+addItem.price;
+        let subtotalCart = prevState.subtotal+parseFloat(addItem.price);
         let updatedProductList = prevState.productList;
         let updatedFeattureProd = prevState.featureProd;
         let existed_item= prevState.cartItem.find(item=> item.id === addCartProdId && item.selectedVariationID == addItem.deafultVariationId);
@@ -145,7 +196,7 @@ const data = (prevState = initialDataState, action) => {
                 updatedProductList = prevState.productList.map(item => {
                 if(item.id == addCartProdId){
                     item.selectedVariationID=item.deafultVariationId;
-                    item.selectedQty +=1; 
+                    item.selectedQty = parseInt(item.selectedQty)+1;
                 }
 
                 return item;
@@ -156,7 +207,7 @@ const data = (prevState = initialDataState, action) => {
                 updatedFeattureProd = prevState.featureProd.map(item => {
                 if(item.product == addCartProdId){
                     item.selectedVariationID=item.deafultVariationId;
-                    item.selectedQty +=1; 
+                    item.selectedQty = parseInt(item.selectedQty)+1;
                 }
 
                     return item;
@@ -173,7 +224,7 @@ const data = (prevState = initialDataState, action) => {
     }
 
 
-        case 'ADD_QTY_IN_CART':
+    case 'ADD_QTY_IN_CART':
         let qtyProdId = action.prodVariId;
         let qtyAction = action.action_type;
         let qtySelectedVariation = action.selectedVariationId;
@@ -182,16 +233,15 @@ const data = (prevState = initialDataState, action) => {
 
         let qtyUpdatedOfProductList = prevState.productList;
         if(prevState.productList.length >0){
-
             qtyUpdatedOfProductList = prevState.productList.map(item => {
-                console.log(item.id+" == "+qtyProdId+" && "+item.deafultVariationId+" == "+qtySelectedVariation)
+                //console.log(item.id+" == "+qtyProdId+" && "+item.deafultVariationId+" == "+qtySelectedVariation)
                 if(item.id == qtyProdId && item.deafultVariationId == qtySelectedVariation){
                     if(qtyAction == 'add'){
                         item.selectedQty +=1;
-                        console.log("prod- IN");
+                        //console.log("prod- IN");
                     }else{
                         item.selectedQty -=1; 
-                        console.log("prod- OUT");
+                        //console.log("prod- OUT");
                     }
                 }
 
@@ -201,7 +251,6 @@ const data = (prevState = initialDataState, action) => {
 
         let qtyUpdatedOfFeattureProd = prevState.featureProd;
         if(prevState.featureProd.length >0){
-
             qtyUpdatedOfFeattureProd = prevState.featureProd.map(item => {
                 //console.log(item.product+" == "+qtyProdId+" && "+item.deafultVariationId+" == "+qtySelectedVariation);
                 if(item.product == qtyProdId && item.deafultVariationId == qtySelectedVariation){
@@ -219,15 +268,18 @@ const data = (prevState = initialDataState, action) => {
         }
 
         let qtyCartItems = prevState.cartItem;
+        let subtotalOnManageQtyItems = prevState.subtotal;
         if(prevState.cartItem.length >0){
             qtyCartItems = prevState.cartItem.map(item => {
                 //console.log(item.prod_id+" == "+qtyProdId+" && "+item.selectedVariationID+" == "+qtySelectedVariation);
                 if(item.prod_id == qtyProdId && item.selectedVariationID == qtySelectedVariation){
                     if(qtyAction == 'add'){
-                        item.selectedQty +=1; 
+                        item.selectedQty =parseInt(item.selectedQty)+1;
+                        subtotalOnManageQtyItems += parseFloat(item.price);
                         //console.log("cart in");
                     }else{
-                        item.selectedQty -=1; 
+                        item.selectedQty =parseInt(item.selectedQty)-1; 
+                        subtotalOnManageQtyItems -= parseFloat(item.price);
                         //console.log("cart fsdf");
                     }
                 }
@@ -238,7 +290,7 @@ const data = (prevState = initialDataState, action) => {
 
         return{
             ...prevState,
-            //subtotal:subtotalCart,
+            subtotal:subtotalOnManageQtyItems,
             cartItem:qtyCartItems,
             productList:qtyUpdatedOfProductList,
             featureProd:qtyUpdatedOfFeattureProd,

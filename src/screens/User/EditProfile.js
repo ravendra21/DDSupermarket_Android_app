@@ -26,7 +26,7 @@ import {ProgressView} from '../../components/loader'
 import { updateUserDetail } from "../../lib/auth"
 import SingleRowImagSkeltons from '../../components/skeltons/SingleRowImagSkeltons'
 import {LocalizationContext} from '../../services/localization/LocalizationContext'
-import {LayoutButton} from '../../components/button'
+import {StickyButtonComponent} from '../../components/button'
 import {PrimaryTextInput,PostTextInput} from '../../components/textInputs'
 //import ImagePicker from 'react-native-image-crop-picker'
 import UserProfileImage from '../../components/UserProfileImage'
@@ -100,9 +100,13 @@ function EditProfile(props){
 
     const saveProfileImage=()=>{
         console.log("saving data",data);
-        if(data.email != "" && data.address!="" && data.first_name != "" && data.last_name != ""){
+        if(data.email != "" && data.first_name != "" && data.last_name != ""){
             Keyboard.dismiss();
-            props.dispatch(updateUserDetail(data));
+            if((data.email != props.auth.user.email) || (data.first_name != props.auth.user.first_name) || (data.last_name !=props.auth.user.last_name)){
+                props.dispatch(updateUserDetail(data));
+            }else{
+                showAlertDialog("Please edit your personal details.");
+            }
         }else{
             showAlertDialog("Please fill all detials.");
         }
@@ -115,7 +119,7 @@ function EditProfile(props){
 		      		extraScrollHeight={140}
 		      		enableOnAndroid={true}
 	     	 	>
-	        	<StatusBar backgroundColor={constants.Colors.color_heading} barStyle="dark-content"/>
+	        	<StatusBar backgroundColor={constants.Colors.color_statusbar} barStyle="dark-content"/>
 
 	            <ScrollView keyboardShouldPersistTaps={'handled'}>
                     <View style={{width:'100%',alignSelf:"center",backgroundColor:constants.Colors.color_WHITE,paddingBottom:10}}>
@@ -134,22 +138,23 @@ function EditProfile(props){
                             >   
                                 
                                     <View style={styles.touchContainer}>
-                                        { data.selectedImage =="" ?(data.profile_image ==""?<Material name={"account"} color={constants.Colors.color_menuTabHigh} size={constants.vw(70)}/>:<Image 
-                                                source={{ uri: profileUrl+data.profile_image}} 
+                                        {/*data.selectedImage =="" ?(data.profile_image ==""?<Material name={"account"} color={constants.Colors.color_menuTabHigh} size={constants.vw(70)}/>:<Image 
+                                            source={{ uri: profileUrl+data.profile_image}} 
                                                 style={styles.userImage} 
                                             />) :(
-                                            <Image 
-                                                source={{ uri:data.selectedImage.path}} 
-                                                style={styles.userImage} 
-                                            />)
-                                        }
+                                                <Image 
+                                                    source={{ uri:data.selectedImage.path}} 
+                                                    style={styles.userImage} 
+                                                    />)
+                                            */}
+                                        <UserProfileImage/>
                                     </View>
                                 
-                                <View style={styles.addPrfile}>
-                                    <TouchableOpacity onPress={()=>{selectUploadImage()}}>
+{/*                                <View style={styles.addPrfile}>
+                                    <TouchableOpacity>
                                         <Icon name={"plus-circle"} size={25} color={constants.Colors.color_menuTabHigh}/>
                                     </TouchableOpacity>
-                                </View>
+                                </View>*/}
                             </View>
                         </View>
 
@@ -181,16 +186,19 @@ function EditProfile(props){
                                 value={props.auth.user.mobile}
                             />
 
-                            <PrimaryTextInput
+{/*                            <PrimaryTextInput
                                 placeholder="Enter Address"
                                 onChangeText={(text)=>setUserData( "address",text )}
                                 value={data.address}
-                            />
+                            />*/}
                         </View>
-                        <LayoutButton title={translations.save} onPress={()=>saveProfileImage()}/>
                     </View>
 	            </ScrollView>
 	    </KeyboardAwareScrollView>
+        <StickyButtonComponent
+            onPress={()=>saveProfileImage()}
+            button_title={"Save"}
+        />
         <ProgressView 
             isProgress={props.indicator} 
             title={translations.updating}

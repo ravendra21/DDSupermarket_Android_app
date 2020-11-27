@@ -29,7 +29,7 @@ export const PrimaryTextInput = (props) => {
     return (
         <View>
             {/* <Text style={styles.textInputTitle}>{props.title}</Text> */}
-            <View style={styles.inputTextBox}>
+            <View style={{...styles.inputTextBox,backgroundColor:constants.Colors.color_WHITE}}>
                 <TextInput
                     {...props}
                     selectionColor={constants.Colors.color_BLACK}

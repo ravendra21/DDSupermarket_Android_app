@@ -32,6 +32,21 @@ function SIGNIN(props){
     const [data, setData] = React.useState({
         email: '',
         isValidUser: true,
+        deviceTokenSet:false,
+    });
+
+    React.useEffect(() => {
+        if( data.deviceTokenSet == false){
+            getDeviceDetails().then(value => {
+                console.log("Device token data",value);
+                let deviceDetails = JSON.parse(value);
+                props.dispatch({type : 'SET-DEVICE_TOKEN',token:deviceDetails.token, os:deviceDetails.os});
+            });
+            setData({
+                ...data,
+                deviceTokenSet: true,
+            });
+        }
     });
 
     const textInputChange = (val) => {
@@ -64,15 +79,17 @@ function SIGNIN(props){
 {/*            <View style={styles.backgroundContainer}>
                 <Image style={styles.bakcgroundImage} source={constants.image.loginImage} />
             </View>*/}
-		    <KeyboardAwareScrollView 
-		      		keyboardShouldPersistTaps={'handled'}
-		      		extraScrollHeight={140}
-		      		enableOnAndroid={true}
-	     	 	>
+		    
 	        	<StatusBar backgroundColor={constants.Colors.color_theme} barStyle="dark-content"/>
-	            <ScrollView keyboardShouldPersistTaps={'handled'}>
-
-	                <View style={{...styles.contentContainer,backgroundColor:constants.Colors.color_WHITE,padding:10,marginTop:constants.vh(30)}}>
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Animatable.Image 
+                            style={styles.logo}
+                            duraton="1500"
+                            resizeMode="contain"
+                            source={constants.image.bg_splash}
+                    />
+                        
+	                <View style={{...styles.contentContainer,backgroundColor:constants.Colors.color_auth_bg,padding:10,marginTop:constants.vh(20),borderRadius:constants.vw(10),paddingBottom:constants.vw(30)}}>
                         <View style={[styles.contentContainer]}>
                             <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:18,textAlign:'center'}}>
                                 Enter your mobile number we will send OTP to verify later
@@ -89,8 +106,8 @@ function SIGNIN(props){
 
                         <LayoutButton  onPress={()=> loginHandle(data.email)} title="NEXT"/>
 	                </View>
-	            </ScrollView>   
-	    </KeyboardAwareScrollView>
+                </View>
+	            
         <ProgressView 
             isProgress={props.indicator} 
             title={constants.progressMessages.SIGNUP}
@@ -102,7 +119,7 @@ function SIGNIN(props){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: constants.Colors.color_auth_bg,
+        backgroundColor: constants.Colors.color_WHITE,
         alignItems: 'center',
         justifyContent: 'flex-end',   
     },

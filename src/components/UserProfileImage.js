@@ -7,7 +7,6 @@ import Material from 'react-native-vector-icons/MaterialCommunityIcons';
 import {profileUrl} from '../constants/url'
 
 function UserProfileImage(props){
-	console.log("profile pic",profileUrl+props.auth.user.image)
 	return (
 		<View>
 			<View>

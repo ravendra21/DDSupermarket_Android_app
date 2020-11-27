@@ -27,7 +27,7 @@ const styles =StyleSheet.create({
 		height:14,
 		borderRadius:7,
 		borderColor:'black',
-		backgroundColor:constants.Colors.color_radiobtn
+		backgroundColor:constants.Colors.color_statusbar
 	}
 
 });

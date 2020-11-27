@@ -186,7 +186,7 @@ const renderProdCat = () => {
         }else{
             return(
                     <View style={{width:'90%',alignSelf:'center'}}>
-                        <View style={{...styles.skeltons,marginTop:0}}>
+                        <View style={{...styles.skeltons,marginTop:-20}}>
                             <View style={{alignItems:'center'}}>
                                 <FullRow/>     
                             </View>
@@ -278,7 +278,7 @@ const renderProdCat = () => {
 		      		enableOnAndroid={true}
 	     	 	>
 	            <ScrollView keyboardShouldPersistTaps={'handled'}>
-                    <View style={{flex:1,width:'102%',alignSelf:'center',marginTop:constants.vh(62),marginBottom:constants.vh(-10)}}>
+                    <View style={{flex:1,width:'102%',alignSelf:'center',marginTop:constants.vh(52),marginBottom:constants.vh(-10)}}>
                         {props.data.homeSlider.length>0?(
                             <Swiper style={{height:constants.width*0.49}} loop={true} autoplay={true} autoplayDirection={true} autoplayTimeout={6} scrollEnabled={true}>
                                 {_swiper()}

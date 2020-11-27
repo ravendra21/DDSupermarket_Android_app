@@ -17,6 +17,7 @@ import {
 } from 'react-native-popup-menu';
 const { SlideInMenu,Popover } = renderers;
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icons from 'react-native-vector-icons/MaterialIcons'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -86,7 +87,16 @@ const styles = StyleSheet.create({
         borderRadius:4,
         width:25,
         height:25
-    }
+    },
+    checkoutBtn:{
+        width:'100%',
+        backgroundColor:constants.Colors.color_theme,
+        position:'absolute',
+        bottom:0,
+        zIndex:1,
+        elevation:60,
+        padding:5
+    },
 
 });
 
@@ -196,6 +206,29 @@ export const IconBtn = (props)=>{
         <TouchableOpacity style={{flexDirection:'row',borderWidth:1,borderRadius:10,borderColor:constants.Colors.color_theme,padding:10,backgroundColor:constants.Colors.color_theme}} {...props}>
             <Icon name={"plus"} size={16} color={constants.Colors.color_drwaerIcon} style={{paddingTop:5}}/>
             <Text style={{fontFamily:constants.fonts.Cardo_Regular,color:constants.Colors.color_WHITE,paddingLeft:10,fontSize:16}}>{props.title}</Text>
+        </TouchableOpacity>
+    )
+}
+
+export const StickyButtonComponent=(props)=>{
+    return(
+        <View style={styles.checkoutBtn}>
+            <TouchableOpacity style={{justifyContent:'flex-end',alignItems:'center'}} {...props}>
+                <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:constants.vw(20),padding:5,color:constants.Colors.color_WHITE}}>{props.button_title}</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
+export const LocationButton=(props)=>{
+    return(
+        <TouchableOpacity 
+            {...props}
+            style={{flexDirection:'row',borderWidth:0,borderColor:constants.Colors.color_lineGrey,marginTop:14,padding:5}}
+            
+        >
+            <Icons name="my-location" size={25} color={constants.Colors.color_statusbar}/>
+            <Text style={{paddingLeft:10,fontSize:constants.vw(16),fontFamily: constants.fonts.Cardo_Regular,color:constants.Colors.color_statusbar}}>{props.title}</Text>
         </TouchableOpacity>
     )
 }

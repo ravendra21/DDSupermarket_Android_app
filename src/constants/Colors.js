@@ -2,7 +2,9 @@ const Colors = {
   color_theme:'#E54154',
   
   color_statusbar:'#F56D37',
+  color_statusbarLight:'#FF7C21',
   color_activeBottomTab:'#F56D37',
+  color_headerTile:"#E54154",
   color_inactiveIcon:"#808080",
   color_drwaerIcon:"#000",
   color_addToCart:"#F56D37",
@@ -31,7 +33,6 @@ const Colors = {
   color_btn:'#41A317',
   color_skelton:'#41A317',
   color_auth_bg:'#FFF5EE',
-  color_headerTile:"#438D80",
   color_chatInput:"#438D80",
   color_radiobtn:"#438D80",
   color_cmtBox:"#E7F3FF",

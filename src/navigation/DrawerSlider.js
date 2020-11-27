@@ -110,6 +110,13 @@ function DrawerSlider(props){
                         </View>
                     </TouchableOpacity>
 
+                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.OrderList.name)}}>
+                        <View style={{flexDirection:'row'}}>
+                            <Material name={"clipboard-list-outline"} size={25} color={constants.Colors.color_drwaerIcon}/>
+                            <Text style={[styles.MenueLable]}>My Orders</Text>
+                        </View>
+                    </TouchableOpacity>
+
 
                     <TouchableOpacity style={[styles.menuTab,data.selectedMenu =="FAQ"?styles.selectedMenu :{}]} onPress={()=>{pressed("FAQ")}}>
                         <View style={{flexDirection:'row'}}>
@@ -133,7 +140,7 @@ function DrawerSlider(props){
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.MyAddress.name)}}>
+                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.MyAddress.name,{screen_name:'MyAddress'})}}>
                         <View style={{flexDirection:'row'}}>
                             <MaterialIcon name={"location-on"} size={23} color={constants.Colors.color_drwaerIcon}/>
                             <Text style={[styles.MenueLable]}>My Addresses</Text>

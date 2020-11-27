@@ -1,11 +1,12 @@
 import React,{Component} from 'react'
-import {View ,TouchableOpacity,StyleSheet,Image,Text,Alert} from 'react-native'
+import {View ,TouchableOpacity,StyleSheet,Image,Text,Alert,ToastAndroid} from 'react-native'
 import {connect} from 'react-redux'
 import constants from "../constants";
 import {AddToCart,AfterAddToCart} from './button';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {navigate} from '../navigation/NavigationServices'
 import { addInWishList,addToCart,manageProdQty } from "../lib/data";
+import {ShowToastWithGravityAndOffset} from '../constants/Utils'
 
 const ProductBlock = props => {
     
@@ -23,9 +24,25 @@ const ProductBlock = props => {
         //props.dispatch({type:'ADD_TO_CART', prodVariId:prodId , prodSelectedQty:selectedQty , variation:selectedVariationID});
     }
 
-    const chooseQuantity =(prodId ,variationId,actionType)=>{
-        console.log(prodId ,variationId,actionType);
-        props.dispatch(manageProdQty({prodVariId:prodId, variation:variationId, actionType:actionType}));
+    const chooseQuantity =(prodId ,variationId,actionType,selectedQty)=>{
+        console.log(prodId ,variationId,actionType, selectedQty);
+        if(selectedQty>1 && actionType =="minus"){
+            
+            props.dispatch(manageProdQty({prodVariId:prodId, variation:variationId, actionType:actionType}));
+
+        }else if(selectedQty>=1 && actionType =="add"){
+            
+            props.dispatch(manageProdQty({prodVariId:prodId, variation:variationId, actionType:actionType}));
+
+        }else{
+                ToastAndroid.showWithGravityAndOffset(
+                    "At Least add one item.",
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
+                    25,
+                    50
+                );
+        }
     }
 
 	return (
@@ -52,13 +69,13 @@ const ProductBlock = props => {
                     { props.selectedVariationID !=""?
                         (
                             <View style={{flexDirection:'row',marginBottom:10}}>
-                                <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(props.productId,props.defaultVariationID ,'minus')}}>
+                                <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(props.productId,props.defaultVariationID ,'minus',props.selectedQty)}}>
                                     <Icon name={'minus'} size={10} color={constants.Colors.color_WHITE}/>
                                 </TouchableOpacity>
                                 <View style={{width:30, justifyContent:'center',alignItems:'center'}}>
                                     <Text style={{...styles.addToCartbtnTitle,fontSize:18,color:constants.Colors.color_addToCart}}>{props.selectedQty}</Text>
                                 </View>
-                                <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(props.productId,props.defaultVariationID,'add')}}>
+                                <TouchableOpacity style={styles.cartIcons} onPress={()=>{chooseQuantity(props.productId,props.defaultVariationID,'add',props.selectedQty)}}>
                                     <Icon name={'plus'} size={10} color={constants.Colors.color_WHITE}/>
                                 </TouchableOpacity>
                             </View>

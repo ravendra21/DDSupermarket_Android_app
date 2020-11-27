@@ -60,21 +60,21 @@ const Screens = {
         name: `PrivacyPolicy`,
         title: `Privacy Policy`
     },
-    CommentScreen: {
-        name: `CommentScreen`,
-        title: `Comment`
+    PaymentOptionScreen: {
+        name: `PaymentOptionScreen`,
+        title: `Payment`
     },
-    AddNewPost: {
-        name: `AddNewPost`,
-        title: `AddNewPost`
+    OrderSuccuess: {
+        name: `OrderSuccuess`,
+        title: `Order Succuess`
     },
-    CreateGroupScreen: {
-        name: `CreateGroupScreen`,
-        title: `Create Group`
+    OrderList: {
+        name: `OrderList`,
+        title: `My Order List`
     },
-    YourGroupScreen: {
-        name: `YourGroupScreen`,
-        title: `Your Groups`
+    OrderDetails: {
+        name: `OrderDetails`,
+        title: `Order Details`
     },
     ConfirmPayment: {
         name: `ConfirmPayment`,

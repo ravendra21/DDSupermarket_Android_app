@@ -24,6 +24,7 @@ import constants from "../../constants";
 import {prod_cat_image,prod_image,prod_variation_url,banner_url} from "../../constants/url";
 import { PrimaryButton,DefaultMenuOption} from "../../components/button";
 import ErrorBox from '../../components/ErrorBox';
+import EmptyBox from '../../components/EmptyBox';
 import { validate,showAlertDialog,generateOtp } from "../../constants/Utils";
 import {navigateWithOutParams} from '../../navigation/NavigationServices'
 import { removeWishProduct,getWishList} from "../../lib/data";
@@ -126,7 +127,19 @@ function WishProductList(props){
                 </View>
             )
         }else{
-            return(
+            if(prod_cat_item.length == 0 && props.error.err=="not found any wish items"){
+                return(
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center',marginTop:constants.height*0.09,marginBottom:constants.vh(20)}}>
+                        <EmptyBox imageUrl={constants.image.emptyWishList} 
+                            button_title={"SHOP NOW"}
+                            mainHeading={"Your wishList is empty !"}
+                            subHeading={"Explore More and shortlist some items."}
+                            onPress={()=>{props.navigation.navigate(constants.Screens.HomeScreen.name, { screen: constants.Screens.HomeScreen.name })}}
+                        />
+                    </View>
+                )
+            }else{
+                return(
                     <View style={{width:'90%',alignSelf:'center'}}>
                         <View style={{...styles.skeltons,marginTop:0}}>
                             
@@ -157,7 +170,8 @@ function WishProductList(props){
                             </View>
                         </View>
                     </View>
-            )
+                )
+            }
         }
     }
     
@@ -170,9 +184,9 @@ function WishProductList(props){
               extraScrollHeight={140}
               enableOnAndroid={true}
           >
-              <ScrollView keyboardShouldPersistTaps={'handled'}>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
              
-                    <View style={{flex:1,width:'102%',alignSelf:'center',marginTop:constants.vh(62),marginBottom:constants.vh(-10)}}>
+                    <View style={{flex:1,width:'102%',alignSelf:'center',marginTop:constants.vh(62),marginBottom:constants.vh(10)}}>
                       {renderProdCat()}
                   </View>
               </ScrollView>

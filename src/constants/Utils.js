@@ -1,6 +1,6 @@
 import React ,{useState}from 'react';
 import { Alert } from "react-native";
-
+import AppConstant from './AppConstant'
 //validation
 export const validations = {
   email: {
@@ -43,7 +43,7 @@ export const validate = (nameField: any, value: any) => {
 export function showAlertDialog(message: any) {
   const _promise = (resolve: any, reject: any) => {
     Alert.alert(
-      "Farmer",
+      AppConstant.AppName,
       message,
       [{ text: "Ok", onPress: () => resolve() }],
       {
@@ -57,4 +57,24 @@ export function showAlertDialog(message: any) {
 
 export const generateOtp =()=>{
     return(1000+Math.floor(Math.random()*9000))
+}
+
+export const checkOrderStatus=(order_status)=>{
+      if(order_status == 0){
+        return 'Pending Payment';
+      }else if(order_status == 2){
+        return 'Hold';
+      }else if(order_status == 3){
+        return 'Dispatched';
+      }else if(order_status == 4){
+        return 'Completed';
+      }else if(order_status == 5){
+        return 'Cancelled';
+      }else if(order_status == 6){
+        return 'Refunded Payment';
+      }else if(order_status == 7){
+        return 'Failed';
+      }else if(order_status == 1){
+        return 'Processing';
+      }
 }

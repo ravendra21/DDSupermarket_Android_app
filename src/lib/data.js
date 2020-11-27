@@ -4,6 +4,236 @@ import {navigateWithOutParams} from '../navigation/NavigationServices'
 import constants from '../constants';
 import {weburl,ddenterpriseApi} from '../constants/url'
 import {showAlertDialog} from '../constants/Utils'
+import RazorpayCheckout from 'react-native-razorpay';
+import {razor_api_key,razor_api_keyTest} from '../constants/key';
+
+
+export const getOrderListList=(userData)=>(dispatch,getState)=>{
+    dispatch({type : 'LOADING'});
+    let orderCreateUrl = ddenterpriseApi + 'api-getOrderList/';
+    let token = getState().auth.user.accessToken;
+    //console.log(checkOutData);
+    var checkOutFormData = new FormData();
+    checkOutFormData.append("user_id", getState().auth.user.id);
+    let post_req = {
+        method: 'POST',
+        body: checkOutFormData,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            'token': token,
+        }
+    }
+
+    console.log(orderCreateUrl ,post_req);
+    fetch(orderCreateUrl,post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            console.log(response);
+            if(response.status == "1"){
+                let userOrderList = response.orderList;
+                if(userOrderList.length>0){
+                    dispatch({type:'FETCH_ORDER_LIST', orderList:response.orderList});
+                }else{
+                    dispatch({ type : 'ERROR_SUBMIT', payload : "Empty Order List"});
+                }
+                //navigateWithOutParams(constants.Screens.OrderSuccuess.name);
+            }else{
+                dispatch({ type : 'ERROR_SUBMIT', payload : "not get Order List"});
+            }
+        })
+        .catch( err => {
+            dispatch({ type : 'ERROR_SUBMIT', payload : "not get Order List"});
+        })
+    })
+    .catch( err => {
+        dispatch({ type : 'NETWORK_ERROR', payload : 'Network Error'})
+        //navigate("internetError");
+    });
+}
+
+export const checkOut= (checkOutData) => (dispatch,getState) =>{
+    dispatch({type : 'LOADING'});
+    let orderCreateUrl = ddenterpriseApi + 'api-create-order-id/';
+    let token = getState().auth.user.accessToken;
+    //console.log(checkOutData);
+    var checkOutFormData = new FormData();
+    checkOutFormData.append("user_id", checkOutData.user_id);
+    checkOutFormData.append("address_id", checkOutData.address_id);
+    checkOutFormData.append("usr_mob", checkOutData.usr_mob);
+    checkOutFormData.append("subtotal", checkOutData.subtotal);
+    checkOutFormData.append("shhipingCost", checkOutData.shhipingCost);
+    checkOutFormData.append("coupon_id", checkOutData.coupon_id);
+    checkOutFormData.append("total_cost", checkOutData.total_cost);
+    checkOutFormData.append("paymentOption", checkOutData.paymentOption);
+    checkOutFormData.append("deliveryDate", checkOutData.deliveryDate);
+
+    let post_req = {
+        method: 'POST',
+        body: checkOutFormData,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            'token': token,
+        }
+    }
+    console.log(orderCreateUrl,post_req);
+    fetch(orderCreateUrl,post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            if(response.status == "1"){
+                console.log("order created",response);
+                    var options = {
+                        description: '',
+                        image:"https://ddenterprises.co.in/assets/images/ddlogonew.png",
+                        currency: 'INR',
+                        key:razor_api_key,
+                        amount: response.orderData["amount"],
+                        name: 'DDSuperMart',
+                        order_id: response.orderData['razor_orderId'],
+                        prefill:{
+                            email: getState().auth.user.email,
+                            contact: checkOutData.usr_mob,
+                            name: getState().auth.user.first_name+" "+getState().auth.user.last_name,
+                        },
+                        theme: {
+                            color: "#E54154",
+                            fontFamily:constants.fonts.Cardo_Regular,
+                            backgroundColor:"#E54154",
+                        }
+                    }
+
+                console.log("Config",options);
+                RazorpayCheckout.open(options).then((data) => {
+                    if(data.razorpay_payment_id !="")
+                    {
+                        // this.props.navigation.navigate("OrderSuccuess");
+                        let orderVerifyUrl = ddenterpriseApi + 'api-verify-order/';
+                        let verifyData= new FormData();
+                        verifyData.append("user_id", checkOutData.user_id);
+                        verifyData.append("cart_items",checkOutData.cart_items);
+                        verifyData.append("razorpay_order_id", data.razorpay_order_id);
+                        verifyData.append("razorpay_signature", data.razorpay_signature);
+                        verifyData.append("razorpay_payment_id", data.razorpay_payment_id);
+                        verifyData.append("foramstopOrderId", response.orderData['receipt']);
+                        verifyData.append("order_no", response.orderData['order_no']);
+                        verifyData.append("email",getState().auth.user.email);
+                        verifyData.append("total_amt", response.orderData['amount']);
+
+                        let verify_post_req = {
+                             method: 'POST',
+                             body:verifyData,
+                             headers: {
+                                 Accept: 'application/json',
+                                 'Content-Type': 'multipart/form-data',
+                                 'token': token,
+                             }
+                        }
+
+                        console.log("verify_post_req",orderVerifyUrl,verify_post_req);
+
+                            fetch(orderVerifyUrl ,verify_post_req).then(res =>{
+                                res.json()
+                                .then(response => {
+                                    console.log(response);
+                                    if(response.status == "1"){
+                                        dispatch({type:'ORDER_SUCCESSFULL'});
+                                        navigateWithOutParams(constants.Screens.OrderSuccuess.name);
+                                        //navigate("OrderSuccuess");
+                                    }else{
+                                        dispatch({ type : 'ERROR_SUBMIT', payload : ""});
+                                        showAlertDialog("Payment failed, Please try again later.");
+                                    }
+                                })
+                                .catch( err => {
+                                    dispatch({ type : 'EXCEPTION_ERROR_SUBMIT'});
+                                    showAlertDialog("Something went wrong ,Please try again later.");
+                                })
+                            })
+                            .catch( err => {
+                                dispatch({ type : 'NETWORK_ERROR', payload : 'Network Error'})
+                                console.log("NetWork Error");
+                                navigate("internetError");
+                            });
+
+                    }
+                  }).catch((error) => {
+                    // handle failure
+                    console.log(error);
+                    // alert(`Error: ${error.code} | ${error.description}`);
+                    dispatch({ type : 'ERROR_SUBMIT', payload : response.message});
+                    showAlertDialog("Something went wrong ,Please try again later.");
+                  });
+
+            }else{
+                dispatch({ type : 'ERROR_SUBMIT', payload : response.message});
+                showAlertDialog("Something went wrong ,Please try again later.");
+            }
+        })
+        .catch( err => {
+            dispatch({ type : 'ERROR_SUBMIT', payload : 'Something went wrong'})
+            showAlertDialog("Something went wrong ,Please try again later.");
+        })
+    })
+    .catch( err => {
+        dispatch({ type : 'ERROR_SUBMIT', payload : 'Network Error'})
+        console.log("NetWork Error");
+    });
+
+}
+
+export const checkOutOnCOD= (checkOutData) => (dispatch,getState) =>{
+    dispatch({type : 'LOADING'});
+    let orderCreateUrl = ddenterpriseApi + 'api-place-cod-order/';
+    let token = getState().auth.user.accessToken;
+
+    var checkOutFormData = new FormData();
+        checkOutFormData.append("user_id", checkOutData.user_id);
+        checkOutFormData.append("address_id", checkOutData.address_id);
+        checkOutFormData.append("usr_mob", checkOutData.usr_mob);
+        checkOutFormData.append("subtotal", checkOutData.subtotal);
+        checkOutFormData.append("shhipingCost", checkOutData.shhipingCost);
+        checkOutFormData.append("coupon_id", checkOutData.coupon_id);
+        checkOutFormData.append("total_cost", checkOutData.total_cost);
+        checkOutFormData.append("paymentOption", checkOutData.paymentOption);
+        checkOutFormData.append("deliveryDate", checkOutData.deliveryDate);
+        checkOutFormData.append("cart_items",checkOutData.cart_items);
+        checkOutFormData.append("email",getState().auth.user.email);
+
+         let post_req = {
+             method: 'POST',
+             body: checkOutFormData,
+             headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'token': token,
+             }
+        }
+
+    console.log(orderCreateUrl ,post_req);
+    fetch(orderCreateUrl,post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            console.log(response);
+            if(response.status == "1"){
+                dispatch({type:'ORDER_SUCCESSFULL'});
+                navigateWithOutParams(constants.Screens.OrderSuccuess.name);
+            }else{
+                dispatch({ type : 'ERROR_SUBMIT', payload : "COD is Failed"});
+            }
+        })
+        .catch( err => {
+            dispatch({ type : 'ERROR_SUBMIT', payload : "COD is Failed"});
+        })
+    })
+    .catch( err => {
+        dispatch({ type : 'NETWORK_ERROR', payload : 'Network Error'})
+        //navigate("internetError");
+    });
+}
 
 export const getProdcutCat=(data)=>async(dispatch,getState)=>{
     //dispatch({type : 'LOADING'});
@@ -392,19 +622,22 @@ export const getCartItems=(pordData)=>async(dispatch,getState)=>{
         res.json()
         .then(response => {
             if(response.status == 1){
-                dispatch({ type : 'FETCH_CART_ITEM', payload:response.cart});
+                let myCartItems = response.cart;
+                if(myCartItems.length>0){
+                    dispatch({ type : 'FETCH_CART_ITEM', payload:response.cart});
+                }else{
+                    dispatch({ type : 'ERROR_SUBMIT', payload : "Your Cart is empty"});
+                }
             }else{
-                console.log("error",response);
+                dispatch({ type : 'ERROR_SUBMIT', payload : "getting error in cart"});
                 //showAlertDialog("POST is not created.Please try again");
             }
         })
         .catch( err => {
-                console.log("product_exception",err);
-                dispatch({ type : 'ERROR_SUBMIT', payload : "Not get product"});
+            dispatch({ type : 'ERROR_SUBMIT', payload : "getting error in cart"});
         })
     })
     .catch( err => {
-            console.log("error" ,err);
             dispatch({ type : 'ERROR_SUBMIT', payload : 'Something went wrong.'})
     })
 }
@@ -453,7 +686,7 @@ export const addInWishList=(pordData)=>async(dispatch,getState)=>{
 
 
 export const getWishList=(pordData)=>async(dispatch,getState)=>{
-    //dispatch({type : 'LOADING'});
+    dispatch({type : 'LOADING'});
     let url = ddenterpriseApi + 'api-get_Wish_List';
     let token = getState().auth.user.accessToken;
     
@@ -473,15 +706,18 @@ export const getWishList=(pordData)=>async(dispatch,getState)=>{
         res.json()
         .then(response => {
             if(response.status == 1){
-                dispatch({ type : 'FTECH_WISH_PRODUCT', payload:response.wishList});
+                let newWishList = response.wishList;
+                if(newWishList.length>0){
+                    dispatch({ type : 'FTECH_WISH_PRODUCT', payload:response.wishList});
+                }else{
+                    dispatch({ type : 'ERROR_SUBMIT', payload : "not found any wish items"});
+                }
             }else{
-                console.log("error",response);
-                //showAlertDialog("POST is not created.Please try again");
+                dispatch({ type : 'ERROR_SUBMIT', payload : "Not get wish list due to error."});
             }
         })
         .catch( err => {
-                console.log("product_exception",err);
-                dispatch({ type : 'ERROR_SUBMIT', payload : "Not get product"});
+            dispatch({ type : 'ERROR_SUBMIT', payload : "Not get wish list due to error."});
         })
     })
     .catch( err => {
@@ -659,4 +895,49 @@ export const removeAddress=(pordData)=>async(dispatch,getState)=>{
             console.log("error" ,err);
             dispatch({ type : 'ERROR_SUBMIT', payload : "address not saved"});
     })
+}
+
+export const checkCouponCode= (data) => (dispatch,getState) => {
+    dispatch({type : 'LOADING'});
+    //let url = weburl + 'api-validate-coupnCode/'+data.code;
+    let token = getState().auth.user.accessToken;
+    let url = ddenterpriseApi + 'api-validate-coupon';
+    console.log(url);
+    var formdata = new FormData();
+    formdata.append("userId", getState().auth.user.id);
+    formdata.append("coupon_code",data.code);
+    formdata.append("total", data.subTotal);
+    formdata.append("cart_items",JSON.stringify(getState().data.cartItem));
+
+
+    let post_req = {
+        method: 'POST',
+        body: formdata,
+        headers: {
+        'Content-Type': 'multipart/form-data',
+         'token': token,
+        }
+    }
+
+    console.log("req on coupon validate",post_req);
+    fetch(url,post_req)
+    .then(res =>{
+        res.json()
+        .then(response => {
+            console.log(response);
+            if(response.status == "1"){
+                dispatch({ type : 'COUPON_CODE_VALIDATE', payload : response.message, coopunValue:response.value,coupon_id:response.coupon_id});
+            }else{
+                dispatch({ type : 'ERROR_COUPON_CODE', payload : response.message});
+            }
+        })
+        .catch( err => {
+            dispatch({ type : 'ERROR_COUPON_CODE', payload : "Somthing went wrong. Please try again later."});
+        })
+    })
+    .catch( err => {
+        dispatch({ type : 'ERROR_SUBMIT', payload : 'Network Error'})
+        console.log("NetWork Error");
+    });
+
 }

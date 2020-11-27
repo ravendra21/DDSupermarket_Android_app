@@ -26,4 +26,8 @@ export default {
 
 //contact us
     contactus:require("../images/contactus.png"),
+//empty
+  emptyWishList:require("../images/empty_wishlist.jpg"),
+  emptyCart:require("../images/empty_bag.jpg"),
+  emptyOrderList:require("../images/emptyOrderList.jpg"),
 }

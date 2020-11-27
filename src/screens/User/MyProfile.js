@@ -32,7 +32,8 @@ import {PrimaryTextInput,PostTextInput} from '../../components/textInputs'
 import {profileUrl} from '../../constants/url'
 import UserProfileImage from '../../components/UserProfileImage'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Octicons from 'react-native-vector-icons/Octicons'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import Material from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function MyProfile(props){
     const {translations} = useContext(LocalizationContext);
@@ -40,55 +41,27 @@ function MyProfile(props){
             selectedImages:'',
     });
 
-
-    const selectUploadImage=()=>{
-       ImagePicker.openPicker({
-            mediaType: 'photo',
-            cropping: true,
-            multiple: false
-        }).then(images => {
-            console.log("upload group pic",images);
-              setData({
-                ...data,
-                selectedImages: images,
-            })
-        });
-    }
-
     const profileContent=()=>{
         return(
-        <View>
-            <View style={{position:"absolute",right:10,top:20}}>
-                <TouchableOpacity onPress={()=>{props.navigation.navigate(constants.Screens.EditProfile.name)}}>
-                    <Icon name={"edit"} size={25} color={constants.Colors.color_WHITE}/>
-                </TouchableOpacity>
-            </View>
-            
-            <View style={{...styles.labelConatainer,flexDirection:'row'}}>
-                <View style={{marginTop:20}}>
-                    <UserProfileImage/>
+            <View>
+                <View style={{position:"absolute",right:10,top:20}}>
+                    <TouchableOpacity onPress={()=>{props.navigation.navigate(constants.Screens.EditProfile.name)}}>
+                        <Icon name={"edit"} size={25} color={constants.Colors.color_theme}/>
+                    </TouchableOpacity>
                 </View>
-                <View style={{paddingTop:constants.vw(20),paddingLeft:constants.vw(40),justifyContent: 'center',alignItems: 'center'}}>
-                    <Text style={styles.userName}>Hello ! {(props.auth.user.first_name != null && props.auth.user.first_name != "" ? props.auth.user.first_name+" "+props.auth.user.last_name : translations.user)}</Text>
-                        {/*<Text style={styles.userName}>Edit Profile</Text>*/}
+                
+                <View style={{...styles.labelConatainer}}>
+                    <View style={{marginTop:20}}>
+                        <UserProfileImage/>
                     </View>
-                </View>
-                <View style={styles.labelConatainer}>
-                    <Text style={{...styles.userName}}>{'Total Area - 0 Hectres'}</Text>
-                </View>
-                <View style={{...styles.labelConatainer,flexDirection:'row',justifyContent:'space-between'}}>
-                    <View>
-                        <Text style={styles.userName}>{"Followers"}</Text>
-                        <Text style={styles.userName}>{"0"}</Text>
-                    </View>
-
-                    <View>
-                        <Text style={styles.userName}>{"Following"}</Text>
-                        <Text style={styles.userName}>{"0"}</Text>
+                    <View style={{paddingTop:constants.vw(20),justifyContent: 'center',alignItems: 'center',marginBottom:20}}>
+                        <Text style={styles.userName}>Hello ! {(props.auth.user.first_name != null && props.auth.user.first_name != "" ? props.auth.user.first_name+" "+props.auth.user.last_name : 'User')}</Text>
+                        <Text style={{...styles.userName,fontSize:constants.vw(16)}}>{(props.auth.user.email != '' ? props.auth.user.email: 'Not available email')}</Text>
+                        <Text style={{...styles.userName,fontSize:constants.vw(16)}}>{(props.auth.user.mobile != '' ? props.auth.user.mobile: 'Not available mobile')}</Text>
                     </View>
                 </View>
             </View>
-            )
+        )
     }
 
 	return(
@@ -99,7 +72,7 @@ function MyProfile(props){
 		      		enableOnAndroid={true}
 	     	 	>
 
-	        	<StatusBar backgroundColor={constants.Colors.color_heading} barStyle="dark-content"/>
+	        	<StatusBar backgroundColor={constants.Colors.color_statusbar} barStyle="dark-content"/>
                 
 	            <ScrollView keyboardShouldPersistTaps={'handled'}>
                     {/*<View style={{backgroundColor:constants.Colors.colors_sliderProfileSec,paddingTop:constants.vw(10),paddingBottom:constants.vw(20)}}>
@@ -129,24 +102,24 @@ function MyProfile(props){
 
                     <View style={{...styles.labelConatainer,width:"95%",marginTop:constants.vh(20)}}>
                         
-                        <TouchableOpacity style={styles.menuTab} >
+                        <TouchableOpacity style={styles.menuTab} onPress={()=>{props.navigation.navigate(constants.Screens.OrderList.name)}}>
                             <View style={{flexDirection:'row'}}>
-                                <Icon name={"th"} size={28}/>
-                                <Text style={[styles.MenueLable]}>{translations.my_farms}</Text>
+                                <Material name={"clipboard-list-outline"} size={25} color={constants.Colors.color_drwaerIcon}/>
+                                <Text style={[styles.MenueLable]}>My Orders</Text>
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.menuTab} >
+                        <TouchableOpacity style={styles.menuTab} onPress={()=>{props.navigation.navigate("WishProductList1")}}>
                             <View style={{flexDirection:'row'}}>
-                                <Octicons name={"tasklist"} size={28}/>
-                                <Text style={[styles.MenueLable]}>{translations.my_task}</Text>
+                                <Material name={"heart"} size={25} color={constants.Colors.color_drwaerIcon}/>
+                                <Text style={[styles.MenueLable]}>My WishList</Text>
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.menuTab} >
+                        <TouchableOpacity style={styles.menuTab} onPress={()=>{props.navigation.navigate(constants.Screens.MyAddress.name,{screen_name:'MyAddress'})}}>
                             <View style={{flexDirection:'row'}}>
-                                <Icon name={"calendar-check-o"} size={28}/>
-                                <Text style={[styles.MenueLable]}>{translations.my_schedule}</Text>
+                                <MaterialIcon name={"location-on"} size={23} color={constants.Colors.color_drwaerIcon}/>
+                                <Text style={[styles.MenueLable]}>My Address </Text>
                             </View>
                         </TouchableOpacity>
                         
@@ -182,9 +155,10 @@ const styles = StyleSheet.create({
         marginTop:constants.vh(20),
     },
     userName:{
+        textAlign:'center',
         fontFamily:constants.fonts.Cardo_Bold,
         fontSize:constants.vh(22),
-        color:constants.Colors.color_WHITE,
+        color:constants.Colors.color_theme,
     },
     MenueLable: {
         fontFamily:constants.fonts.Cardo_Bold,
@@ -206,7 +180,7 @@ const styles = StyleSheet.create({
       },
 
     overlay: {
-        backgroundColor:'rgba(105,103,102,0.5)',
+        backgroundColor:'rgba(229,84,84,0.2)',
     },
     avatarStyle: {
         width:100, 

@@ -1,6 +1,6 @@
 import React,{useContext} from 'react';
 import {View,Text, StyleSheet ,StatusBar,Alert,FlatList,SafeAreaView,ScrollView,Keyboard,TextInput,
-    TouchableOpacity,Image,Platform,Modal,ToastAndroid
+    TouchableOpacity,Image,Platform,Modal,ToastAndroid,PermissionsAndroid
 } from 'react-native'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -12,17 +12,18 @@ import {prod_cat_image} from "../../constants/url"
 import {showAlertDialog} from "../../constants/Utils" 
 import {navigateWithOutParams} from '../../navigation/NavigationServices'
 import {ProgressView} from '../../components/loader'
-import { updateUserDetail } from "../../lib/auth"
+import { checkDelivery } from "../../lib/auth"
 import {addNewAddress, getAddress,removeAddress }from "../../lib/data"
 import SingleRowImagSkeltons from '../../components/skeltons/SingleRowImagSkeltons'
-import {LocalizationContext} from '../../services/localization/LocalizationContext'
-import {LayoutButton,IconBtn,AddressMenuOption} from '../../components/button'
+import {LayoutButton,IconBtn,AddressMenuOption,LocationButton} from '../../components/button'
 import {PrimaryTextInput,PostTextInput,SquareTextInput} from '../../components/textInputs'
-//import ImagePicker from 'react-native-image-crop-picker'
 import UserProfileImage from '../../components/UserProfileImage'
 import {profileUrl} from '../../constants/url'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Geolocation from 'react-native-geolocation-service';
+
+
 import {
   Menu,
   MenuOptions,
@@ -34,12 +35,11 @@ const { SlideInMenu,Popover } = renderers;
 
 
 function MyAddress(props){
-    const {translations} = useContext(LocalizationContext);
     const [data, setData] = React.useState({
         selectedImage:'',
         email:props.auth.user.email,
         address:'',
-        mobile:'',
+        mobile:props.auth.user.mobile,
         name:'',
         district:'',
         State:'',
@@ -117,9 +117,10 @@ function MyAddress(props){
     }
 
     const saveAddress=()=>{
-        let {mobile,name, address} = data;
-        if(mobile =="" && name=="" && address==""){
+        let {mobile,name, address,district,state} = data;
+        if(mobile =="" || name=="" || address=="" || district=="" || state ==""){
             //console.log("Please fill all filed")
+            showAlertDialog("Please fill details.");
         }else{
             
             setData({
@@ -129,6 +130,49 @@ function MyAddress(props){
 
             Keyboard.dismiss();
             props.dispatch(addNewAddress(data));
+        }
+    }
+
+    const getCurrentLocation=async()=>{
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
+                  'title': 'Location Access Required',
+                  'message': 'This App needs to Access your location'
+                }
+            )
+            
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                //To Check, If Permission is granted
+                // that.callLocation(that);
+
+                Geolocation.getCurrentPosition(
+                //Will give you the current location
+
+                 (position) => {
+                     console.log(position);
+                    const currentLongitude = JSON.stringify(position.coords.longitude);
+                    //getting the Longitude from the location json
+                    const currentLatitude = JSON.stringify(position.coords.latitude);
+                    //getting the Latitude from the location json
+                    // this.setState({ currentLongitude:currentLongitude });
+                    // //Setting state Longitude to re re-render the Longitude Text
+                    // this.setState({ currentLatitude:currentLatitude });
+                    // //Setting state Latitude to re re-render the Longitude Text
+
+                    // this.props.checkDelivery({lat:currentLatitude,lng:currentLongitude});
+                    props.dispatch(checkDelivery({lat:currentLatitude,lng:currentLongitude}));
+                 },
+                 (error) => {console.log(error)},
+                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 }
+            );
+
+            } else {
+            alert("Permission Denied");
+        }
+        } catch (err) {
+        //   alert("err",err);
+          console.warn(err)
         }
     }
 
@@ -209,22 +253,25 @@ function MyAddress(props){
                                         title="Pincode"
                                         onChangeText={(text)=>setUserData( "pincode",text )}
                                         keyboardType={"numeric"}
-                                        value={data.pincode}
+                                        value={data.pincode =="" ? props.data.currentPincode:data.pincode }
                                     />
 
                                     <View style={{marginTop:10}}>
+                
+                                    <LocationButton onPress={()=>{getCurrentLocation()}} title={"Get Current Location"}/>
+
                                     <Text style={{color: constants.Colors.color_BLACK,fontFamily: constants.fonts.Cardo_Regular,fontSize: 14}}>Address</Text>
                                     <TextInput
                                         style={styles.textArea}
                                         title="Address"
                                         onChangeText={(text)=>setUserData( "address",text )}
-                                        value={data.address}
+                                        value={data.address =="" ? props.data.currentAddress:data.address }
                                         numberOfLines={4}
                                         multiline={true}
                                     />
                                     </View>                                    
                                 </View>
-                                <LayoutButton title={translations.save} onPress={()=>saveAddress()}/>
+                                <LayoutButton title={"Save"} onPress={()=>saveAddress()}/>
                             </ScrollView>
                             <ProgressView 
                                 isProgress={props.indicator} 
@@ -260,6 +307,11 @@ function MyAddress(props){
         setModalVisible(true);
     }
 
+    const selectDeliveryAddress=(addressId)=>{
+        props.dispatch({type:'SET_DELIVERY_DATE',address:addressId});
+        props.navigation.navigate(constants.Screens.PaymentOptionScreen.name);
+    }
+
     const renderAddressList=()=>{
         let addressList = props.data.addressList;
 
@@ -281,9 +333,11 @@ function MyAddress(props){
                                                 <MenuOption {...props} style={{flexDirection:'row'}} {...props} onSelect={()=>editAddress(item.id)}>
                                                     <Text style={{...styles.dropOpt,color:constants.Colors.color_theme}}>Edit</Text>
                                                 </MenuOption>
-                                                <MenuOption {...props} style={{flexDirection:'row'}} onSelect={()=>remove(item.id)}>
+                                                {props.route.params.screen_name == 'PaymentOption'?(<MenuOption {...props} style={{flexDirection:'row'}} onSelect={()=>selectDeliveryAddress(item.id)}>
+                                                    <Text style={{...styles.dropOpt,color:constants.Colors.color_theme}}>Delivery at this Address</Text>
+                                                </MenuOption>):(<MenuOption {...props} style={{flexDirection:'row'}} onSelect={()=>remove(item.id)}>
                                                     <Text style={{...styles.dropOpt,color:constants.Colors.color_theme}}>Remove</Text>
-                                                </MenuOption>
+                                                </MenuOption>)}
                                             </MenuOptions>
                                         </Menu>
                             </View>
