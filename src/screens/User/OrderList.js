@@ -59,7 +59,7 @@ function OrderList(props){
         let orderData = props.data.orderList;
         if(orderData.length>0){
             return(
-                    <View style={{alignSelf:'center',width:'98%'}}>
+                    <View style={{alignSelf:'center',width:'98%', marginTop:10}}>
                         <FlatList
                           showsVerticalScrollIndicator={true}
                           data={orderData}
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
     prodBlock:{
         alignSelf:'center',
         backgroundColor:"white",
-        borderRadius:10,
-        borderWidth:1,
+        borderRadius:5,
+        borderWidth:0.5,
         borderColor:constants.Colors.color_statusbar,
         padding:constants.vw(12),
         margin: constants.vw(5),

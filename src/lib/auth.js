@@ -165,7 +165,23 @@ export const login = (data) => async(dispatch,getState) => {
     let url = ddenterpriseApi + 'api-login?mobile='+data.mobile;
     console.log(url);
 
-    fetch(url)
+    var req_attribute = new FormData();
+    req_attribute.append("mobile",data.mobile);
+    req_attribute.append("device_token",getState().auth.user.device_token);
+    req_attribute.append("device_type",getState().auth.user.device_type);
+
+    let post_req = {
+        method: 'POST',
+        body: req_attribute,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+        }
+    }
+    
+    console.log(url,post_req);
+
+    fetch(url,post_req)
     .then(res =>{
         res.json()
         .then(response => {
@@ -187,7 +203,14 @@ export const login = (data) => async(dispatch,getState) => {
                 setUserAccessTokenToStorage(response.token);
                 setUserToStorage(JSON.stringify(user));
 
-                dispatch({ type : 'LOGIN_SUCCESS', payload : response.user,token:response.token });
+                dispatch({
+                    type : 'LOGIN_SUCCESS',
+                    payload : response.user,
+                    token:response.token,
+                    device_token: getState().auth.user.device_token,
+                    device_type: getState().auth.user.device_type
+                });
+
             }else{
                 dispatch({ type : 'ERROR_SUBMIT', payload : response.message});
                 showAlertDialog("response.message");
@@ -266,7 +289,7 @@ export const updateUserDetail =(user_data)=>async(dispatch,getState)=>{
             if(response.status == 1){
 
                 var user = {
-                    "accessToken": getState().auth.user.accessToken,
+                    "accessToken": getState().auth.accessToken,
                     "device_token":  getState().auth.user.device_token,
                     "device_type": getState().auth.user.device_type,
                     "email": response.user['email'],

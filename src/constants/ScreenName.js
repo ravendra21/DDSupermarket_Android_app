@@ -88,5 +88,13 @@ const Screens = {
         name: `EditProfile`,
         title: `Edit Profile`
     },
+    NotificationScreen:{
+        name: `NotificationScreen`,
+        title: `Notifications`  
+    },
+    ViewNotification:{
+        name: `ViewNotification`,
+        title: `ViewNotification`  
+    },
 }
 export default Screens;

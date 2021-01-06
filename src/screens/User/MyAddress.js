@@ -8,7 +8,7 @@ import * as Animatable from 'react-native-animatable'
 import {connect} from 'react-redux'
 import {TextScreenHeader} from '../../components/textInputs'
 import constants from "../../constants"
-import {prod_cat_image} from "../../constants/url"
+import {prod_cat_image,ddenterpriseApi} from "../../constants/url"
 import {showAlertDialog} from "../../constants/Utils" 
 import {navigateWithOutParams} from '../../navigation/NavigationServices'
 import {ProgressView} from '../../components/loader'
@@ -38,11 +38,11 @@ function MyAddress(props){
     const [data, setData] = React.useState({
         selectedImage:'',
         email:props.auth.user.email,
-        address:'',
         mobile:props.auth.user.mobile,
         name:'',
         district:'',
         State:'',
+        address:'',
         pincode:'',
         address_id:0,
         defaultApicCalled:false,
@@ -161,7 +161,40 @@ function MyAddress(props){
                     // //Setting state Latitude to re re-render the Longitude Text
 
                     // this.props.checkDelivery({lat:currentLatitude,lng:currentLongitude});
-                    props.dispatch(checkDelivery({lat:currentLatitude,lng:currentLongitude}));
+                    //props.dispatch(checkDelivery({lat:currentLatitude,lng:currentLongitude}));
+                    props.dispatch({type : 'LOADING'});
+                    let url = ddenterpriseApi + 'api-current-loc?lat='+currentLatitude+"&lng="+currentLongitude;
+                    console.log(url);
+                    fetch(url).then(res =>{
+                        res.json()
+                        .then(response => {
+                            //console.log(response);
+                            if(response.status == "1"){
+                                if(response.available != "NOT"){
+                                    props.dispatch({type:'DISABLE_LOADER'});
+                                    showAlertDialog(response.message);
+                                }else{
+                                    setData({
+                                        ...data,
+                                        address:response.address,
+                                        pincode:response.pincode,
+                                    });
+
+                                    props.dispatch({ type : 'LOCATION_FETCHED',  address : response.address, pincode:response.pincode });
+                                }
+                    
+                            }else{
+                                props.dispatch({ type : 'ERROR_SUBMIT', payload : response.message});
+                            }
+                        })
+                        .catch( err => {
+                            props.dispatch({ type : 'EXCEPTION_ERROR_SUBMIT'});
+                        })
+                    })
+                    .catch( err => {
+                        props.dispatch({ type : 'NETWORK_ERROR', payload : 'Network Error'})
+                        //navigate("internetError");
+                    });
                  },
                  (error) => {console.log(error)},
                  { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 }
@@ -209,6 +242,11 @@ function MyAddress(props){
                       setModalVisible(!modalVisible)
                     }}
                   >
+                <KeyboardAwareScrollView 
+                    keyboardShouldPersistTaps={'handled'}
+                    extraScrollHeight={140}
+                    enableOnAndroid={true}
+                >
                     <View style={styles.centeredView}>
                       <View style={styles.modalView}>
                         <View style={{flexDirection:'row',justifyContent:'space-between',borderBottomWidth:0,shadowColor: "#000",elevation:2,width:constants.width,alignSelf:'center',marginTop:-12,padding:20}}>
@@ -253,7 +291,7 @@ function MyAddress(props){
                                         title="Pincode"
                                         onChangeText={(text)=>setUserData( "pincode",text )}
                                         keyboardType={"numeric"}
-                                        value={data.pincode =="" ? props.data.currentPincode:data.pincode }
+                                        value={data.pincode}
                                     />
 
                                     <View style={{marginTop:10}}>
@@ -265,7 +303,7 @@ function MyAddress(props){
                                         style={styles.textArea}
                                         title="Address"
                                         onChangeText={(text)=>setUserData( "address",text )}
-                                        value={data.address =="" ? props.data.currentAddress:data.address }
+                                        value={data.address}
                                         numberOfLines={4}
                                         multiline={true}
                                     />
@@ -279,6 +317,7 @@ function MyAddress(props){
                             />
                       </View>
                     </View>
+                    </KeyboardAwareScrollView>
                   </Modal>
         )
     }

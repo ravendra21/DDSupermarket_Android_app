@@ -286,7 +286,7 @@ const renderProdCat = () => {
                             ):<View/>
                         } 
                     </View>
-                    <View style={[styles.labelConatainer,{marginBottom:constants.vh(10)}]}>
+                    <View style={[styles.labelConatainer,{marginBottom:constants.vh(10),marginTop:constants.vh(10)}]}>
                         {renderProductCat()}
                     </View>
                     <View style={[styles.labelConatainer]}>
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     bannerImg:{
         alignSelf:'center',
         width:constants.width,
-        height:constants.width*0.51,
+        height:constants.width*0.50,
         resizeMode:'contain',
     },
     skeltons:{

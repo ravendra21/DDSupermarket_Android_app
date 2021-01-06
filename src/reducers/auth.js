@@ -85,8 +85,8 @@ const auth = (prevState = initalstate, action) => {
           user: {
             ...prevState.user,
             accessToken:action.token,
-            device_token: null,
-            device_type: null,
+            device_token: action.device_token,
+            device_type: action.device_type,
             email:action.payload.email,
             first_name: action.payload.first_name,
             id: action.payload.id,

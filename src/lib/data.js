@@ -7,6 +7,44 @@ import {showAlertDialog} from '../constants/Utils'
 import RazorpayCheckout from 'react-native-razorpay';
 import {razor_api_key,razor_api_keyTest} from '../constants/key';
 
+export const removeCartItem=(reqData)=>(dispatch,getState)=>{
+    dispatch({type : 'LOADING'});
+    let url = ddenterpriseApi + 'api-removeCartItem/';
+    let token = getState().auth.user.accessToken;
+
+    var postReqData = new FormData();
+    postReqData.append("user_id", getState().auth.user.id);
+    postReqData.append("cart_item_id",reqData.cartItem_Id);
+
+    let post_req = {
+        method: 'POST',
+        body: postReqData,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            'token': token,
+        }
+    }
+
+    console.log(url,post_req);
+    fetch(url,post_req).then(res =>{
+        res.json()
+        .then(response => {
+            console.log(response);
+            if(response.status == "1"){
+                dispatch({type:'REMOVED_CART_ITEM', cartItemId:response.cartItemId});
+            }else{
+                dispatch({ type : 'ERROR_SUBMIT', payload : "not_removed_item"});
+            }
+        })
+        .catch( err => {
+            dispatch({ type : 'ERROR_SUBMIT', payload : "not_removed_item"});
+        })
+    }).catch( err => {
+        dispatch({ type : 'NETWORK_ERROR', payload : 'Network Error'})
+        //navigate("internetError");
+    });
+}
 
 export const getOrderListList=(userData)=>(dispatch,getState)=>{
     dispatch({type : 'LOADING'});

@@ -6,7 +6,7 @@ const Colors = {
   color_activeBottomTab:'#F56D37',
   color_headerTile:"#E54154",
   color_inactiveIcon:"#808080",
-  color_drwaerIcon:"#000",
+  color_drwaerIcon:"#E54154",
   color_addToCart:"#F56D37",
   color_main_heading:'#99A7B0',
   color_searchBox:'#F56D37',

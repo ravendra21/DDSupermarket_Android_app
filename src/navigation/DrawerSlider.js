@@ -76,6 +76,7 @@ function DrawerSlider(props){
                     source={constants.image.drawerSliderBg}
                     resizeMode="stretch"
                 >*/}
+
                 <View style={styles.profileContainer}>
                     <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate("HomeScreen")}}>
                         <View style={{flexDirection:'row'}}>
@@ -98,60 +99,63 @@ function DrawerSlider(props){
                 <View>
                     <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate("HomeScreen")}}>
                         <View style={{flexDirection:'row'}}>
-                            <Icon name={"home"} size={25} color={constants.Colors.color_drwaerIcon}/>
+                            <Icon name={"home"} size={constants.vw(23)} color={constants.Colors.color_drwaerIcon}/>
                             <Text style={[styles.MenueLable]}>Home</Text>
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.Profile.name)}}>
                         <View style={{flexDirection:'row'}}>
-                            <Material name={"account"} size={25} color={constants.Colors.color_drwaerIcon}/>
+                            <Material name={"account"} size={constants.vw(23)} color={constants.Colors.color_drwaerIcon}/>
                             <Text style={[styles.MenueLable]}>My Account</Text>
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.OrderList.name)}}>
-                        <View style={{flexDirection:'row'}}>
-                            <Material name={"clipboard-list-outline"} size={25} color={constants.Colors.color_drwaerIcon}/>
-                            <Text style={[styles.MenueLable]}>My Orders</Text>
-                        </View>
-                    </TouchableOpacity>
-
-
-                    <TouchableOpacity style={[styles.menuTab,data.selectedMenu =="FAQ"?styles.selectedMenu :{}]} onPress={()=>{pressed("FAQ")}}>
-                        <View style={{flexDirection:'row'}}>
-                            <Material name={"comment-question"} size={25} color={constants.Colors.color_drwaerIcon}/>
-                            <Text style={[styles.MenueLable,data.selectedMenu =="FAQ"?styles.selected:styles.notSelected]}>{translations.faq}</Text>
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.menuTab,data.selectedMenu =="FAQ"?styles.selectedMenu :{}]} onPress={()=>{props.navigation.navigate("WishProductList1")}}>
-                        <View style={{flexDirection:'row'}}>
-                            <Material name={"heart"} size={25} color={constants.Colors.color_drwaerIcon}/>
-                            <Text style={styles.MenueLable}>My Wish</Text>
-                        </View>
-                    </TouchableOpacity>
-
-
-                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{}}>
-                        <View style={{flexDirection:'row'}}>
-                            <Icon name={"bell"} size={23} color={constants.Colors.color_drwaerIcon}/>
-                            <Text style={[styles.MenueLable]}>Notifications</Text>
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.MyAddress.name,{screen_name:'MyAddress'})}}>
                         <View style={{flexDirection:'row'}}>
-                            <MaterialIcon name={"location-on"} size={23} color={constants.Colors.color_drwaerIcon}/>
+                            <MaterialIcon name={"location-on"} size={constants.vw(23)} color={constants.Colors.color_drwaerIcon}/>
                             <Text style={[styles.MenueLable]}>My Addresses</Text>
                         </View>
                     </TouchableOpacity>
 
+                    <View style={{width:'100%',borderColor:constants.Colors.color_drwaerIcon,borderBottomWidth:0.5,marginBottom:5,marginTop:5}}/>
+
+                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.OrderList.name)}}>
+                        <View style={{flexDirection:'row'}}>
+                            <Material name={"clipboard-list-outline"} size={constants.vw(23)} color={constants.Colors.color_drwaerIcon}/>
+                            <Text style={[styles.MenueLable]}>My Orders</Text>
+                        </View>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{pressed("FAQ")}}>
+                        <View style={{flexDirection:'row'}}>
+                            <Material name={"comment-question-outline"} size={constants.vw(25)} color={constants.Colors.color_drwaerIcon}/>
+                            <Text style={[styles.MenueLable,data.selectedMenu =="FAQ"?styles.selected:styles.notSelected]}>{translations.faq}</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate("WishProductList1")}}>
+                        <View style={{flexDirection:'row'}}>
+                            <Material name={"heart"} size={constants.vw(23)} color={constants.Colors.color_drwaerIcon}/>
+                            <Text style={styles.MenueLable}>My Wish</Text>
+                        </View>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity style={[styles.menuTab]} onPress={()=>{props.navigation.navigate(constants.Screens.NotificationScreen.name)}}>
+                        <View style={{flexDirection:'row'}}>
+                            <Material name={"bell-outline"} size={constants.vw(23)} color={constants.Colors.color_drwaerIcon}/>
+                            <Text style={[styles.MenueLable]}>Notifications</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <View style={{width:'100%',borderColor:constants.Colors.color_drwaerIcon,borderBottomWidth:0.5,marginBottom:5,marginTop:5}}/>
                     
                     <TouchableOpacity style={[styles.menuTab]} onPress={()=> {logoutAction()}}>
                         <View style={{flexDirection:'row'}}>
-                            <Material name={"logout"} size={25} color={constants.Colors.color_drwaerIcon}/>
-                            <Text style={[styles.MenueLable,data.selectedMenu =="Logout"?styles.selected:styles.notSelected]}>{translations.logout}</Text>
+                            <Material name={"logout"} size={constants.vw(23)} color={constants.Colors.color_theme}/>
+                            <Text style={{...styles.MenueLable,color:constants.Colors.color_theme}}>Logout</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -182,7 +186,7 @@ const styles = StyleSheet.create({
         width: '85%', alignSelf: 'center'
     },
     MenueLable: {
-        fontFamily:constants.fonts.Cardo_Bold,
+        fontFamily:constants.fonts.Cardo_Regular,
         fontSize:constants.vw(18),
         paddingLeft:10,
     },

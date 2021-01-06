@@ -5,8 +5,34 @@ import {
     TextInput,
     Platform,
     StyleSheet,
+    TouchableOpacity,
+    Image
 } from 'react-native';
 import constants from "../constants";
+
+export const NotificationBlock =(props)=>{
+    return(
+        <View style={{marginTop:constants.vh(10)}}>
+            <TouchableOpacity style={{flexDirection:'row',width:'100%',alignSelf:'center'}} {...props}>
+                <View style={{padding:constants.vw(6)}}>
+                {props.image_url !="" ?(<Image style={{width:constants.width*0.24,height:constants.width*0.24,resizeMode:'contain'}} 
+                                    source={{ uri: props.image_url}} />):(<View style={{width:constants.width*0.24,height:constants.width*0.24,justifyContent:'center',alignItem:'center'}}><Text>No Image</Text></View>)
+                }
+                </View>
+
+                <View style={{width:constants.width*0.68}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                        <Text style={{fontSize:constants.vw(15),fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_BLACK}}>{props.subTitle}</Text>
+                        <Text style={{fontSize:constants.vw(14),fontFamily:constants.fonts.Cardo_Regular,color:constants.Colors.color_gray,marginTop:constants.vw(5)}}>{props.date}</Text>
+                    </View>
+                    <Text style={{fontSize:constants.vw(14),fontFamily:constants.fonts.Cardo_Regular,color:constants.Colors.color_grey}}>{props.message}</Text>
+                </View>
+
+            </TouchableOpacity>
+            <View style={{marginTop:constants.vh(10),width:constants.width*0.98,borderBottomWidth:0.5,borderColor:constants.Colors.color_grey,alignSelf:'center'}}/>
+        </View>
+    )
+}
 
 export const TextScreenHeader = (props) => {
     return (

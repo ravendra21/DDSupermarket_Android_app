@@ -28,7 +28,7 @@ import ErrorBox from '../../components/ErrorBox';
 import EmptyBox from '../../components/EmptyBox';
 import { validate,showAlertDialog,generateOtp} from "../../constants/Utils"
 import {navigateWithOutParams} from '../../navigation/NavigationServices'
-import { manageProdQty,getCartItems} from "../../lib/data"
+import { manageProdQty,getCartItems,removeCartItem} from "../../lib/data"
 import {SingleRowSkeltons,FullRow,ProductBlockSkelton} from '../../components/skeltons/RowSkeltons'
 import SingleRowImagSkeltons from '../../components/skeltons/SingleRowImagSkeltons'
 import SearchBox from '../../components/SearchBox'
@@ -95,17 +95,17 @@ function CartItemScreen(props){
         props.navigation.navigate(constants.Screens.SingleProduct.name,{"prodId":prodId,"type":actionType,"attribute_slug":slug });
     }
 
-    const removeFromWish =(prodId)=>{
+    const removeItemFromCart =(cartItemId)=>{
         Alert.alert(
                     "DDEnterprise",
-                    "Do you want reomve?",
+                    "Do you want remove?",
           [
             {
               text: "Cancel",
               onPress: () => console.log("Cancel Pressed"),
               style: "cancel"
             },
-            { text: "OK", onPress: () => props.dispatch(removeWishProduct({prodID:prodId}))}
+            { text: "OK", onPress: () => props.dispatch(removeCartItem({cartItem_Id:cartItemId}))}
           ],
           { cancelable: false }
         );
@@ -174,19 +174,22 @@ function CartItemScreen(props){
                                                 <Icon name={'plus'} size={10} color={constants.Colors.color_WHITE}/>
                                             </TouchableOpacity>
                                         </View>
-
+                                        
                                         <View>
-                                            <TouchableOpacity style={{borderWidth:1,borderRadius:5,borderColor:constants.Colors.color_lineGrey,padding:3,width:70,elevation:3,backgroundColor:constants.Colors.color_WHITE}}>
+                                            <TouchableOpacity style={{borderWidth:1,borderRadius:5,borderColor:constants.Colors.color_lineGrey,padding:3,width:70,elevation:3,backgroundColor:constants.Colors.color_WHITE}}
+                                                onPress={()=>{removeItemFromCart(item.cart_item_id)}}
+                                            >
                                                 <Text style={{fontFamily:constants.fonts.Cardo_Bold,fontSize:16}}> Remove </Text>
                                             </TouchableOpacity>
                                         </View>
+
                                     </View>
                                 </View>
                             </View>
                       )}
                       //Setting the number of column
                       numColumns={1}
-                      keyExtractor={(item) => item.id}
+                      keyExtractor={(item) => item.cart_item_id}
                       ListFooterComponent={
                         <View style={{height:40}}/>
                       }

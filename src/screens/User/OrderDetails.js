@@ -56,7 +56,7 @@ function OrderDetails(props){
         console.log(orderDetails.get_cart_items);
 
         return(
-            <View style={{width:constants.width*0.95,alignSelf:'center'}}>
+            <View style={{width:constants.width*0.95,marginTop:constants.vw(10),alignSelf:'center'}}>
                 <Text style={styles.boldHeading}>View order details</Text>
                 <View style={styles.prodBlock}>
                     <View style={{flexDirection:'row'}}>
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     prodBlock:{
         alignSelf:'center',
         backgroundColor:"white",
-        borderRadius:10,
-        borderWidth:1,
+        borderRadius:5,
+        borderWidth:0.5,
         borderColor:constants.Colors.color_statusbar,
         padding:constants.vw(12),
         margin: constants.vw(5),

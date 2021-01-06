@@ -17,6 +17,15 @@ export const SingleRowSkeltons = () => {
   );
 };
 
+export const NormalRow = () => {
+  return (
+    <SkeletonPlaceholder>
+      <SkeletonPlaceholder.Item>
+        <SkeletonPlaceholder.Item marginLeft={0} width={constants.width*0.95} height={constants.height/10} borderRadius={4} marginTop={5} />
+      </SkeletonPlaceholder.Item>
+    </SkeletonPlaceholder>
+  );
+};
 
 export const CommunitySkelton = () => {
   return (

@@ -43,7 +43,7 @@ const initialDataState = {appIntro:'',popup:'',
 
     currentAddress:'',
     currentPincode:'',
-    
+    user_notification:[],
 };
 
 const data = (prevState = initialDataState, action) => {
@@ -54,6 +54,12 @@ const data = (prevState = initialDataState, action) => {
             ...prevState,
             currentAddress:action.address,
             currentPincode:action.pincode
+        }
+
+        case 'USER_NOTIFICATION':
+        return{
+            ...prevState,
+            user_notification:action.userNotification,
         }
 
         case 'GET_HOME_DATA':
@@ -169,7 +175,7 @@ const data = (prevState = initialDataState, action) => {
         let subtotalOfGettingItems=0;
         fetchCartItem.map(item => {
             if(item.price !='' && item.selectedQty>0){
-                subtotalOfGettingItems += parseFloat(item.price)* parseInt(item.selectedQty);
+                subtotalOfGettingItems += parseFloat(item.minsp)* parseInt(item.selectedQty);
             }
         })
 
@@ -182,7 +188,7 @@ const data = (prevState = initialDataState, action) => {
         case 'ADD_TO_CART':
         let addCartProdId = action.prodVariId;
         let addItem = action.addItem[0];
-        let subtotalCart = prevState.subtotal+parseFloat(addItem.price);
+        let subtotalCart = prevState.subtotal+parseFloat(addItem.minsp);
         let updatedProductList = prevState.productList;
         let updatedFeattureProd = prevState.featureProd;
         let existed_item= prevState.cartItem.find(item=> item.id === addCartProdId && item.selectedVariationID == addItem.deafultVariationId);
@@ -222,6 +228,48 @@ const data = (prevState = initialDataState, action) => {
             featureProd:updatedFeattureProd,
         }
     }
+
+    case 'REMOVED_CART_ITEM':
+        let cartItemId = action.cartItemId;
+        let cartItemDetails = (prevState.cartItem).find(item=>item.cart_item_id == cartItemId);
+
+        let removeCartItems = prevState.cartItem;
+        let subtotalOnRemoveQtyItems = prevState.subtotal;
+        if(prevState.cartItem.length >0){
+            subtotalOnRemoveQtyItems = parseFloat(subtotalOnRemoveQtyItems)-(parseFloat(cartItemDetails.minsp)*parseInt(cartItemDetails.selectedQty));
+            removeCartItems = prevState.cartItem.filter(item=>item.cart_item_id != cartItemId);
+        }
+
+
+        let qtyRemoveOfProductList = prevState.productList;
+        if(prevState.productList.length >0){
+            qtyRemoveOfProductList = prevState.productList.map(item => {
+                if(item.id == cartItemDetails.prod_id && item.deafultVariationId == cartItemDetails.selectedVariationID){
+                    item.selectedQty=0;
+                    item.selectedVariationID="";
+                }
+                return item;
+            });
+        }
+
+        let qtyRemoveOfFeattureProd = prevState.featureProd;
+        if(prevState.featureProd.length >0){
+            qtyRemoveOfFeattureProd = prevState.featureProd.map(item => {
+                if(item.product == cartItemDetails.prod_id && item.deafultVariationId == cartItemDetails.selectedVariationID){
+                    item.selectedQty =0;
+                    item.selectedVariationID="";
+                }
+                return item;
+            });
+        }    
+
+        return{
+            ...prevState,
+            subtotal:subtotalOnRemoveQtyItems,
+            cartItem:removeCartItems,
+            productList:qtyRemoveOfProductList,
+            featureProd:qtyRemoveOfFeattureProd,
+        }
 
 
     case 'ADD_QTY_IN_CART':
@@ -275,11 +323,11 @@ const data = (prevState = initialDataState, action) => {
                 if(item.prod_id == qtyProdId && item.selectedVariationID == qtySelectedVariation){
                     if(qtyAction == 'add'){
                         item.selectedQty =parseInt(item.selectedQty)+1;
-                        subtotalOnManageQtyItems += parseFloat(item.price);
+                        subtotalOnManageQtyItems += parseFloat(item.minsp);
                         //console.log("cart in");
                     }else{
                         item.selectedQty =parseInt(item.selectedQty)-1; 
-                        subtotalOnManageQtyItems -= parseFloat(item.price);
+                        subtotalOnManageQtyItems -= parseFloat(item.minsp);
                         //console.log("cart fsdf");
                     }
                 }
@@ -431,33 +479,6 @@ const data = (prevState = initialDataState, action) => {
             wishProdList:action.payload
         }
         
-        case 'LIKED_POST':
-        let post_id_for_like = action.post_id;
-        let like_on_post = action.total_like_on_post;
-        let activePostCat = prevState.posts;
-
-        if(prevState.activeCommunity == 1){
-            activePostCat = prevState.questionPost;
-        }else if(prevState.activeCommunity == 2){
-            activePostCat = prevState.organicFarming;
-        }
-
-        let updateAllPostLike = activePostCat.map(item => {
-            if( item.id == post_id_for_like){
-                item.total_like = like_on_post;
-                if(item.is_liked == 1){
-                    item.is_liked =0;
-                }else{
-                    item.is_liked =1;
-                }
-            }
-            return item;
-        });
-
-        return{
-            ...prevState,
-            posts :updateAllPostLike
-        }
 
         default:
         return prevState;

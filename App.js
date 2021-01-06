@@ -17,21 +17,30 @@ import {setDeviceDetails} from './src/services/async-storage'
 
 import PushNotificationIOS from "@react-native-community/push-notification-ios"
 var PushNotification = require("react-native-push-notification");
+
+interface Props {
+  navigation: any;
+}
+
+var deviceData = "";
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
-  onRegister: function (deviceTokenData){
+  onRegister: function (deviceTokenData) {
     console.log("TOKEN:", deviceTokenData);
-    //AsyncStorage.setItem('DEVICE_TOKEN', JSON.stringify(deviceTokenData));
     setDeviceDetails(JSON.stringify(deviceTokenData));
+    deviceData=deviceTokenData
   },
  
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
     console.log("NOTIFICATION:", notification);
- 
-      PushNotification.localNotification({
+
+    PushNotification.localNotification({
         //showWhen:true,
         autoCancel: true,
+        largeIcon: "ic_launcher",
+        largeIconUrl:notification.data.largeIcon,
+        smallIcon: "ic_notification",
         bigText:notification.data.message,
         title: notification.data.title,
         message: notification.data.message,
@@ -40,17 +49,19 @@ PushNotification.configure({
         vibration: 300,
         playSound: true,
         soundName: 'default',
-        })
+        priority: "high",
+    });
+
 
     // (required) Called when a remote is received or opened, or local notification is opened
     if(notification.userInteraction === true)
     {
-      console.log("open screen on touch notification");
-      //check_notification();
+        console.log("open screen on touch notification");
+        //check_notification();
     }
 
     notification.finish(PushNotificationIOS.FetchResult.NoData);
-  },
+},
  
   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
   onAction: function (notification) {
@@ -64,6 +75,7 @@ PushNotification.configure({
     console.error(err.message, err);
   },
  
+  senderID: "246582908079",
   // IOS ONLY (optional): default: all - Permissions to register.
   permissions: {
     alert: true,
@@ -73,6 +85,7 @@ PushNotification.configure({
  
   // Should the initial notification be popped automatically
   // default: true
+  //popInitialNotification: true,
   popInitialNotification: true,
  
   /**
@@ -83,11 +96,8 @@ PushNotification.configure({
    *     requestPermissions: Platform.OS === 'ios'
    */
   requestPermissions: true,
-});
 
-interface Props {
-  navigation: any;
-}
+});
 
 class App extends React.Component<Props>{
   static navigationOptions = {
@@ -96,6 +106,13 @@ class App extends React.Component<Props>{
 
   constructor(props){
       super(props);
+  }
+
+  test=()=>{
+          PushNotification.localNotification({
+        title: "hi",
+        message: "i am call",
+      });
   }
 
   componentDidMount(){

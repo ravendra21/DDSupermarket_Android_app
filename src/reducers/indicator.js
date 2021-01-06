@@ -3,6 +3,7 @@ const indicator = (state = false, action) => {
         case 'LOADING' :
             return true;
         case 'ERROR_SUBMIT':
+        case 'REMOVED_CART_ITEM':
         case 'FETCH_ORDER_LIST':
         case 'OTP_SEND':
         case "FETCH_ORDER_DETAILS":
@@ -21,6 +22,7 @@ const indicator = (state = false, action) => {
         case 'FTECH_SINGAL_PRODUCT':
         case 'SEARCHING_PRODUCT':
         case 'SEARCHING_PRODUCT_LIST':
+        case 'USER_NOTIFICATION':
         case 'REMOVE_WISH_PRODUCT':
         case 'ADD_TO_CART':
         case 'FETCH_CART_ITEM':

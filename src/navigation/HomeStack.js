@@ -25,16 +25,20 @@ import OrderSuccuess from '../screens/CartScreen/OrderSuccuess';
 import OrderList from '../screens/User/OrderList'
 import OrderDetails from '../screens/User/OrderDetails'
 
+import NotificationScreen from '../screens/User/NotificationScreen'
+import ViewNotification from '../screens/User/ViewNotification'
+
 const RootStack = createStackNavigator();
 const HomeStack = ({navigation}) => (
     <RootStack.Navigator initialRouteName="HomeScreen" screenOptions={{
-      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-    }}>
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    }}
+    >
         <RootStack.Screen
             options={({ navigation }) => ({
                 headerLeft: ()=> <NavigationDrawerStructure navigationProps={navigation} />,
                 headerTitle: () => <Header navigation={navigation} />,
-                headerStyle:{backgroundColor:constants.Colors.color_theme,shadowOpacity:0,elevation: 1},
+                headerStyle:{backgroundColor:constants.Colors.color_theme,shadowOpacity:1,elevation: 2},
                 headerTransparent:false,
             })}
 
@@ -45,7 +49,7 @@ const HomeStack = ({navigation}) => (
             options={({ navigation }) => ({
                 headerLeft: ()=> <NavigationDrawerStructure navigationProps={navigation} />,
                 headerTitle: () => <Header navigation={navigation} />,
-                headerStyle:{backgroundColor:constants.Colors.color_theme,shadowOpacity:0,elevation: 1},
+                headerStyle:{backgroundColor:constants.Colors.color_theme,shadowOpacity:1,elevation:2},
                 headerTransparent:false,
             })}
 
@@ -97,7 +101,7 @@ const HomeStack = ({navigation}) => (
         <RootStack.Screen
             options={({ navigation }) => ({
                 headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_headerTile,fontSize:20}}>Edit Profile</Text>,
-                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerStyle:{shadowOpacity:0.5,elevation:2},
                 headerTransparent:false,
             })}
             name={constants.Screens.EditProfile.name} component={EditProfile}
@@ -115,7 +119,7 @@ const HomeStack = ({navigation}) => (
         <RootStack.Screen
             options={({ navigation }) => ({
                 headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.MyAddress.title}</Text>,
-                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerStyle:{shadowOpacity:1,elevation:2},
                 headerTransparent:false,
             })}
             name={constants.Screens.MyAddress.name} component={MyAddress}
@@ -133,16 +137,16 @@ const HomeStack = ({navigation}) => (
         <RootStack.Screen
             options={({ navigation }) => ({
                 headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.OrderList.title}</Text>,
-                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerStyle:{shadowOpacity:1,elevation:2},
                 headerTransparent:false,
             })}
             name={constants.Screens.OrderList.name} component={OrderList}
         />
 
         <RootStack.Screen
-            options={({ navigation }) => ({
+            options={({ navigation }) =>({
                 headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.OrderDetails.title}</Text>,
-                headerStyle:{shadowOpacity:0,elevation: 0},
+                headerStyle:{shadowOpacity:1,elevation:2},
                 headerTransparent:false,
             })}
             name={constants.Screens.OrderDetails.name} component={OrderDetails}
@@ -157,6 +161,25 @@ const HomeStack = ({navigation}) => (
             })}
 
         name={constants.Screens.OrderSuccuess.name} component={OrderSuccuess}
+        />
+
+    {/* Notification screens*/}
+        <RootStack.Screen
+            options={({ navigation }) =>({
+                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.NotificationScreen.title}</Text>,
+                headerStyle:{shadowOpacity:1,elevation:2},
+                headerTransparent:false,
+            })}
+            name={constants.Screens.NotificationScreen.name} component={NotificationScreen}
+        />
+
+        <RootStack.Screen
+            options={({ navigation }) =>({
+                headerTitle: <Text style={{fontFamily:constants.fonts.Cardo_Bold,color:constants.Colors.color_statusbar,fontSize:constants.vw(20)}}>{constants.Screens.ViewNotification.title}</Text>,
+                headerStyle:{shadowOpacity:1,elevation:2},
+                headerTransparent:false,
+            })}
+            name={constants.Screens.ViewNotification.name} component={ViewNotification}
         />
 
 
